@@ -6,8 +6,11 @@ void default_constants();
 // cycles the arm through the preset heights so you can check/capture them
 void arm_height_test();
 
-// simple match auton: drive + turn via EZ's IMU PID
-void overrideTest();
+// 2red1black match auton: drive + turn via EZ's IMU PID
+void twoRed1Black();
+
+// 1red1black match auton: drive + turn via EZ's IMU PID
+void oneRed1Black();
 
 // programming skills run (60s solo)
 void skills();

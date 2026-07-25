@@ -39,7 +39,8 @@ void initialize() {
 
   // auton selector (brain screen). first entry = default
   ez::as::auton_selector.autons_add({
-      {"Override Test\n\nMatch auton: drive + turns + arm (EZ IMU PID)", overrideTest},
+      {"2red1black\n\nMatch auton: drive + turns + arm (EZ IMU PID)", twoRed1Black},
+      {"1red1black\n\nMatch auton: drive + turns (EZ IMU PID)", oneRed1Black},
       {"Skills\n\nProgramming skills run (60s solo)", skills},
       {"Arm Height Test\n\nCycles the arm through low/mid/high presets (move_absolute), prints encoder pos", arm_height_test},
       {"PID Square\n\n48in square (straights + 90 turns), tune drive/turn PID by how well it closes", pid_square},

@@ -47,8 +47,8 @@ void default_constants() {
   chassis.pid_angle_behavior_set(ez::shortest);  // default turns take the shortest way around
 }
 
-// simple match auton, now uses EZ's IMU-based PID drive + turns (IMU on port 9).
-void overrideTest() {
+// 2red1black match auton -- EZ's IMU-based PID drive + turns (IMU on port 9).
+void twoRed1Black() {
 
   chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
@@ -56,7 +56,7 @@ void overrideTest() {
   chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  arm.move_absolute(ARM_LOW_POS, 70);   
+  arm.move_absolute(ARM_LOW_POS, 110);   
 
   chassis.pid_drive_set(17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
@@ -68,7 +68,7 @@ void overrideTest() {
   chassis.pid_drive_set(17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  arm.move_absolute(ARM_REST_POS, 100);
+  arm.move_absolute(ARM_REST_POS, 110);
   pros::delay(1000);  
 
   chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
@@ -80,14 +80,14 @@ void overrideTest() {
   chassis.pid_drive_set(-24_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  arm.move_absolute(ARM_LOW_POS, 100); 
+  arm.move_absolute(ARM_LOW_POS, 110); 
   chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
   chassis.pid_wait();
 
   chassis.pid_drive_set(24_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  arm.move_absolute(ARM_REST_POS, 100);
+  arm.move_absolute(ARM_REST_POS, 110);
   pros::delay(1000);  
 
   chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
@@ -107,6 +107,48 @@ void overrideTest() {
   chassis.pid_wait();
 }
 
+void oneRed1Black(){
+  chassis.pid_drive_set(12_in,DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_set(90_deg, TURN_SPEED);  
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-24_in,DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-24_in,DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(26_in,DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+
+  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(26_in,DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(17_in,DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-17_in,DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+
+  chassis.pid_turn_set(90_deg, TURN_SPEED);  
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(24_in,DRIVE_SPEED, true);
+  chassis.pid_wait();
+}
 
 void skills() {
 
