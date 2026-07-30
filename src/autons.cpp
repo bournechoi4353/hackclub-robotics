@@ -232,7 +232,7 @@ void skills() {
 
 // cycles the arm through each preset height, pausing at each so you can line it
 // up against the tower and read the encoder. uses move_absolute, the motor's
-// built-in smooth move, no PID tuning. edit the ARM_*_POS numbers in config.hpp
+// built-in smooth move, no PID tuning. edit the ARM_*_POS numbers in ports.hpp
 // once you've captured your real heights.
 void arm_height_test() {
   arm.tare_position_all();  // 0 = wherever the arm is resting right now
