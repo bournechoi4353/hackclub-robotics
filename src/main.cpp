@@ -2,7 +2,7 @@
 
 // built on EZ-Template, docs at https://ez-robotics.github.io/EZ-Template/
 
-// ports + measurements are all in config.hpp. first motor per side does the
+// ports + measurements are all in ports.hpp. first motor per side does the
 // sensing
 ez::Drive chassis(
     LEFT_DRIVE_PORTS,
@@ -150,8 +150,9 @@ void opcontrol() {
     // chassis.opcontrol_arcade_flipped(ez::SPLIT);
     // chassis.opcontrol_arcade_flipped(ez::SINGLE);
 
-    arm_control();     // L1 = arm up / L2 = arm down
-    intake_control();  // R1 = intake in / R2 = intake out
+    arm_control();     // R1 = arm up / R2 = arm down
+    intake_control();  // L1 = intake in / L2 = intake out
+    claw_control();    // D-pad up/down = claw rollers in/out; A = clamp toggle
 
     pros::delay(ez::util::DELAY_TIME);  //EZ uses this for timing
   }

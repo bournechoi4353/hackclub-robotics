@@ -1,6 +1,6 @@
 #include "main.h"
 
-// ports in config.hpp. green cartridge = 200rpm (change if geared differently)
+// ports in ports.hpp. green cartridge = 200rpm (change if geared differently)
 pros::MotorGroup arm({ARM_LEFT_PORT, ARM_RIGHT_PORT}, pros::MotorGears::green);
 
 // both arm motors at once. positive = up
