@@ -1,14 +1,8 @@
 #pragma once
 
-// ============================================================
-//  robot config, every port and measurement lives here.
-//  changed a port on the robot? change it once, right here,
-//  and everything else picks it up.
-// ============================================================
 
-//  drive: 2 full (11W) + 1 half (5.5W) motor per side (negative port = reversed) 
-// each side is {full, full, half}. placeholders, set to your real ports and negate
-// any motor that spins the wrong way.
+
+
 #define LEFT_DRIVE_PORTS  {-15, -16, -14}      // {full, full, half}
 #define RIGHT_DRIVE_PORTS {12, 13, 11}   // {full, full, half}
 constexpr int    IMU_PORT       = 9;   // V5 inertial sensor

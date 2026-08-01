@@ -153,6 +153,8 @@ void opcontrol() {
     arm_control();     // L1 = arm up / L2 = arm down
     intake_control();  // R1 = intake in / R2 = intake out
 
-    pros::delay(ez::util::DELAY_TIME);  // keep this, EZ uses it for timing
+    pros::delay(ez::util::DELAY_TIME);  //EZ uses this for timing
   }
 }
+
+
