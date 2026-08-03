@@ -26,3 +26,7 @@ void motion_profile_test();
 
 // MCL test: catches a 4" odom error we plant on purpose
 void mcl_test();
+
+// wall reset test: plants a deliberately wrong pose, then corrects it off
+// whichever of front/right/left is square to a wall
+void wall_reset_test();

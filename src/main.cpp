@@ -32,8 +32,8 @@ void initialize() {
   default_constants();
 
   // arm holds its position when no button is pressed instead of coasting down
-  arm.set_brake_mode_all(pros::MotorBrake::hold);
-  arm.tare_position_all();  // zero the arm encoders
+  arm.set_brake_mode(pros::MotorBrake::hold);
+  arm.tare_position();  // zero the arm encoder
 
   // auton selector (brain screen). first entry = default
   ez::as::auton_selector.autons_add({
@@ -45,6 +45,7 @@ void initialize() {
       {"Motion Profile\n\nTrapezoidal profiled drive 48in, print traveled distance", motion_profile_test},
       {"Odom Spin\n\nMotor pivots in place; reports x/y drift (should be ~0)", odom_spin_test},
       {"MCL Test\n\nParticle filter: converge near corner, catch a planted 4in odom error, flush between motions", mcl_test},
+      {"Wall Reset Test\n\nOne-shot odom snap off front/right/left sensors, plants a wrong pose first", wall_reset_test},
   });
 
   chassis.initialize();
@@ -113,8 +114,10 @@ void ez_screen_task() {
 }
 pros::Task ezScreenTask(ez_screen_task);
 
-// EZ extras, only active off comp control: DOWN+B runs the selected auton.
-// PID tuner is disabled -- X and the arrows are free for the claw controls.
+// EZ extras, only active off comp control: DOWN+B runs the selected auton
+// (note: DOWN alone also toggles the left roller via claw_control(), so
+// holding this combo will flip that roller on/off too -- harmless off comp
+// control, but worth knowing). PID tuner is disabled -- X is free.
 void ez_template_extras() {
   if (!pros::competition::is_connected()) {
     if (master.get_digital(DIGITAL_B) && master.get_digital(DIGITAL_DOWN)) {
@@ -139,8 +142,7 @@ void opcontrol() {
     // chassis.opcontrol_arcade_flipped(ez::SINGLE);
 
     arm_control();     // lift: R1 up / R2 down
-    intake_control();  // L1 = intake / L2 = outtake
-    claw_control();    // X toggles claw rollers on/off; LEFT close / RIGHT open the clamp
+    claw_control();    // UP toggles right roller, DOWN toggles left roller; LEFT close / RIGHT open the clamp
 
     pros::delay(ez::util::DELAY_TIME);  //EZ uses this for timing
   }

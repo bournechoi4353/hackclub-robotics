@@ -248,7 +248,7 @@ void skills() {
 // built-in smooth move, no PID tuning. edit the ARM_*_POS numbers in ports.hpp
 // once you've captured your real heights.
 void arm_height_test() {
-  arm.tare_position_all();  // 0 = wherever the arm is resting right now
+  arm.tare_position();  // 0 = wherever the arm is resting right now
 
   const int ARM_VEL = 100;  // move speed in deg/sec (green cartridge tops out ~200)
   double heights[] = {ARM_LOW_POS, ARM_MID_POS, ARM_HIGH_POS, ARM_REST_POS};
@@ -315,6 +315,21 @@ void motion_profile_test() {
 
   double traveled = (chassis.drive_sensor_left() + chassis.drive_sensor_right()) / 2.0;
   printf("Motion profile -> target: 48.0 in   traveled: %f in\n", traveled);
+}
+
+// square the robot up against a real wall before running this. seeds a
+// deliberately wrong pose (so there's something to fix), then wall_reset()
+// should snap it back -- prints before/after so you can see it move.
+void wall_reset_test() {
+  chassis.odom_xyt_set(0_in, 0_in, chassis.odom_theta_get());  // wrong x/y on purpose
+  printf("Wall reset -- BEFORE: x:%.2f y:%.2f t:%.2f\n",
+         chassis.odom_x_get(), chassis.odom_y_get(), chassis.odom_theta_get());
+
+  bool applied = wall_reset();
+
+  printf("Wall reset -- AFTER:  x:%.2f y:%.2f t:%.2f  (%s)\n",
+         chassis.odom_x_get(), chassis.odom_y_get(), chassis.odom_theta_get(),
+         applied ? "applied" : "no sensor was square to a wall in range");
 }
 
 // MCL end-to-end test. place the robot at field (-48, -48) facing forward,

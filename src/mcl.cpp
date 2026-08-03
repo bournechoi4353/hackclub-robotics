@@ -317,15 +317,14 @@ void mcl::sensors_set(const std::vector<mcl::sensor_cfg>& s) {
 void mcl::start(double x, double y, double seed_spread) {
   mtx.take();
 
-  // measured sensor geometry (body frame, relative to the tracking center):
-  // off_x = right(+)/left(-) of center, off_y = forward(+)/behind(-) of center.
-  // beam_height is just a note, but 9-10" is high and may shoot over a short
-  // field wall, which shows up as gated side beams.
+  // sensor geometry lives in ports.hpp (shared with wall_reset.cpp). beam_height
+  // is just a note, but 9-10" is high and may shoot over a short field wall,
+  // which shows up as gated side beams.
   if (sensors.empty()) {
     sensors = {
-        {&distanceFront, -5.0,  7.0,   0.0,  5.5},  // 7" fwd, 5" left
-        {&distanceRight,  4.5,  1.5,  90.0, 10.0},  // 1.5" fwd, 4.5" right
-        {&distanceLeft,  -5.0,  6.5, 270.0,  9.0},  // 6.5" fwd, 5" left
+        {&distanceFront, DIST_FRONT_OFF_X, DIST_FRONT_OFF_Y, DIST_FRONT_FACING,  5.5},
+        {&distanceRight, DIST_RIGHT_OFF_X, DIST_RIGHT_OFF_Y, DIST_RIGHT_FACING, 10.0},
+        {&distanceLeft,  DIST_LEFT_OFF_X,  DIST_LEFT_OFF_Y,  DIST_LEFT_FACING,   9.0},
     };
   }
 

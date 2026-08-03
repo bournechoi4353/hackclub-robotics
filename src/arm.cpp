@@ -1,9 +1,9 @@
 #include "main.h"
 
-// ports in ports.hpp. green cartridge = 200rpm (change if geared differently)
-pros::MotorGroup arm({ARM_LEFT_PORT, ARM_RIGHT_PORT}, pros::MotorGears::green);
+// single motor. green cartridge = 200rpm (change if geared differently)
+pros::Motor arm(LIFT_PORT, pros::MotorGears::green);
 
-// both arm motors at once. positive = up
+// positive = up
 void set_arm(int speed) {
   arm.move(speed);
 }
