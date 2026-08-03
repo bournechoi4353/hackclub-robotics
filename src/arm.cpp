@@ -8,7 +8,7 @@ void set_arm(int speed) {
   arm.move(speed);
 }
 
-// hold R1 = full up, hold R2 = full down, release = stop (brake HOLD holds it in place)
+// lift: hold R1 = full up, hold R2 = full down, release = stop (brake HOLD holds it in place)
 void arm_control() {
   if (master.get_digital(DIGITAL_R1)) {
     set_arm(127);   // full up

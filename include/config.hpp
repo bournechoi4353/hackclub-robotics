@@ -5,9 +5,9 @@
 
 #define LEFT_DRIVE_PORTS  {-15, -16, -14}      // {full, full, half}
 #define RIGHT_DRIVE_PORTS {12, 13, 11}   // {full, full, half}
-constexpr int    IMU_PORT       = 9;   // V5 inertial sensor
-constexpr double WHEEL_DIAMETER = 2.75;
-constexpr double DRIVE_RPM      = 450;
+constexpr int    IMU_PORT       = 20;   // V5 inertial sensor
+constexpr double WHEEL_DIAMETER = 3.25;
+constexpr double DRIVE_RPM      = 333;
 
 //  tracking wheels (offsets come from the Measure Offsets auton) 
 // the horiz sign matters, +7.61 ran x/y away on a spin

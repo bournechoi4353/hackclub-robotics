@@ -9,5 +9,5 @@ extern pros::adi::Pneumatics clawPiston;
 // spin the claw rollers for autons, -127..127 (positive = in)
 void set_claw(int speed);
 
-// driver control: D-pad up/down spins the rollers in/out, A toggles the clamp
+// driver control: X toggles the rollers on/off, LEFT closes the clamp, RIGHT opens it
 void claw_control();

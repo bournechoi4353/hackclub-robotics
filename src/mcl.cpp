@@ -40,7 +40,7 @@ constexpr double OUTLIER_FLOOR = 0.08;   // flat floor relative to the gaussian 
 constexpr double GATE_SIGMAS = 3.0;      // innovation gate width
 constexpr double GATE_PAD = 1.0;         // + fixed pad (in)
 
-// sensor validity, same gates wall_reset uses
+// sensor validity gates
 constexpr int CONF_MIN = 30;         // pros::Distance confidence is 0-63
 constexpr double RANGE_MIN = 2.0;    // inches
 constexpr double RANGE_MAX = 36.0;
@@ -317,16 +317,15 @@ void mcl::sensors_set(const std::vector<mcl::sensor_cfg>& s) {
 void mcl::start(double x, double y, double seed_spread) {
   mtx.take();
 
-  // measured sensor geometry (body frame, facing CW from forward). off_y
-  // only matters for the back sensor, it aims -Y so its setback biases the
-  // range; the side sensors only care about off_x. beam_height is just a
-  // note, but 9-10" is high and may shoot over a short field wall, which
-  // shows up as gated side beams
+  // measured sensor geometry (body frame, relative to the tracking center):
+  // off_x = right(+)/left(-) of center, off_y = forward(+)/behind(-) of center.
+  // beam_height is just a note, but 9-10" is high and may shoot over a short
+  // field wall, which shows up as gated side beams.
   if (sensors.empty()) {
     sensors = {
-        {&distanceBack,   3.0, -5.0, 180.0,  5.5},
-        {&distanceRight,  6.0,  0.0,  90.0, 10.0},
-        {&distanceLeft,  -3.0,  0.0, 270.0,  9.0},
+        {&distanceFront, -5.0,  7.0,   0.0,  5.5},  // 7" fwd, 5" left
+        {&distanceRight,  4.5,  1.5,  90.0, 10.0},  // 1.5" fwd, 4.5" right
+        {&distanceLeft,  -5.0,  6.5, 270.0,  9.0},  // 6.5" fwd, 5" left
     };
   }
 

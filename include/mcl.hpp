@@ -35,9 +35,10 @@ namespace mcl {
 
 // one distance sensor. offsets are body frame (+x right, +y forward, inches),
 // facing_deg is clockwise from forward (90 right, 180 back, 270 left).
-// replace the placeholder offsets once the robot is built. beam_height isn't
-// used in the math (map is 2D), it's a note, keep sensors under ~4" so
-// they range walls, not cup stacks and robots
+// the offsets in mcl.cpp's default table are measured off the real robot, not
+// placeholders -- don't "correct" them. beam_height isn't used in the math
+// (map is 2D), it's a note, keep sensors under ~4" so they range walls, not
+// cup stacks and robots
 struct sensor_cfg {
   pros::Distance* dev;
   double off_x, off_y;

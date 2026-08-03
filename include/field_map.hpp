@@ -14,7 +14,7 @@
 // the mirror bug stays impossible.
 namespace field {
 
-// center to the inner wall face (same number wall_reset uses)
+// center to the inner wall face (same number mcl uses)
 constexpr double FIELD_HALF = 70.25;
 
 // nominal tile pitch. still need to confirm 24.0 vs ~23.4, the goal

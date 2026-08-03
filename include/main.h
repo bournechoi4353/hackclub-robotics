@@ -51,7 +51,7 @@
 #include "intake.hpp"        // intake subsystem (L1 in / L2 out in driver control)
 #include "claw.hpp"          // claw subsystem (2x 5.5W rollers + clamp pneumatic)
 #include "motion_profile.hpp"
-#include "wall_reset.hpp"
+#include "wall_align.hpp"   // closed-loop drive-to-distance + square-to-walls off the distance sensors
 #include "jerryio_path.hpp"  // Run path.jerryio paths via EZ pure pursuit
 #include "mcl.hpp"           // Monte Carlo localization (IMU owns heading; MCL owns position)
 

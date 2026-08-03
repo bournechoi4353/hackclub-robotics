@@ -12,17 +12,22 @@ void set_claw(int speed) {
   claw.move(speed);
 }
 
-// D-pad up = spin in, D-pad down = spin out, A toggles the clamp
-void claw_control() {
-  if (master.get_digital(DIGITAL_UP)) {
-    claw.move(127);   // in
-  } else if (master.get_digital(DIGITAL_DOWN)) {
-    claw.move(-127);  // out
-  } else {
-    claw.move(0);     // stop
-  }
+// X toggles the claw rollers in, B toggles them out (not holds). Pressing one
+// while the other is running switches straight to the new direction. LEFT
+// closes the clamp, RIGHT opens it.
+int claw_motor_dir = 0;  // 0 = off, 1 = in, -1 = out
 
-  if (master.get_digital_new_press(DIGITAL_A)) {
-    clawPiston.toggle();  // clamp / release
+void claw_control() {
+  if (master.get_digital_new_press(DIGITAL_X)) {
+    claw_motor_dir = (claw_motor_dir == 1) ? 0 : 1;
+  } else if (master.get_digital_new_press(DIGITAL_B)) {
+    claw_motor_dir = (claw_motor_dir == -1) ? 0 : -1;
+  }
+  claw.move(claw_motor_dir * 127);
+
+  if (master.get_digital_new_press(DIGITAL_LEFT)) {
+    clawPiston.extend();   // close
+  } else if (master.get_digital_new_press(DIGITAL_RIGHT)) {
+    clawPiston.retract();  // open
   }
 }

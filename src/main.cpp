@@ -12,7 +12,6 @@ ez::Drive chassis(
     DRIVE_RPM);
 
 ez::tracking_wheel horiz_tracker(HORIZ_TRACKER_PORT, HORIZ_TRACKER_DIAMETER, HORIZ_TRACKER_OFFSET);
-ez::tracking_wheel vert_tracker(VERT_TRACKER_PORT, VERT_TRACKER_DIAMETER, VERT_TRACKER_OFFSET);
 
 // runs as soon as the program starts
 void initialize() {
@@ -20,12 +19,11 @@ void initialize() {
 
   pros::delay(500);  // let the ports configure before anything runs
 
-  // ODOM DISABLED: no tracking wheels on this bot (they'd go on ports 6/15). The
-  // IMU (port 9) still gives pid_drive_set / pid_turn_set their heading, so those
-  // work off the IMU + motor encoders. Full 2D odom (pid_odom_set) needs trackers,
-  // so mount them, then re-enable these two lines.
-  // chassis.odom_tracker_back_set(&horiz_tracker);
-  // chassis.odom_tracker_left_set(&vert_tracker);
+  // horizontal tracker only -- no vertical/parallel tracker on this bot, so
+  // forward distance still comes from the drive motor encoders. this one wheel
+  // corrects strafe/turning drift; pid_drive_set/pid_turn_set already work off
+  // the IMU + encoders either way.
+  chassis.odom_tracker_back_set(&horiz_tracker);
 
   chassis.opcontrol_curve_buttons_toggle(true);   // adjust curve with the joystick buttons
   chassis.opcontrol_drive_activebrake_set(0.0);   // 0 = off, EZ recommends ~2
@@ -40,7 +38,7 @@ void initialize() {
   // auton selector (brain screen). first entry = default
   ez::as::auton_selector.autons_add({
       {"2red1black\n\nMatch auton: drive + turns + arm (EZ IMU PID)", twoRed1Black},
-      {"1red1black\n\nMatch auton: drive + turns (EZ IMU PID)", oneRed1Black},
+      {"threered\n\nMatch auton: drive + turns (EZ IMU PID)", threered},
       {"Skills\n\nProgramming skills run (60s solo)", skills},
       {"Arm Height Test\n\nCycles the arm through low/mid/high presets (move_absolute), prints encoder pos", arm_height_test},
       {"PID Square\n\n48in square (straights + 90 turns), tune drive/turn PID by how well it closes", pid_square},
@@ -115,25 +113,15 @@ void ez_screen_task() {
 }
 pros::Task ezScreenTask(ez_screen_task);
 
-// EZ extras, only active off comp control: X toggles the PID tuner
-// (A/Y change values, arrows navigate), DOWN+B runs the selected auton
+// EZ extras, only active off comp control: DOWN+B runs the selected auton.
+// PID tuner is disabled -- X and the arrows are free for the claw controls.
 void ez_template_extras() {
   if (!pros::competition::is_connected()) {
-    if (master.get_digital_new_press(DIGITAL_X))
-      chassis.pid_tuner_toggle();
-
     if (master.get_digital(DIGITAL_B) && master.get_digital(DIGITAL_DOWN)) {
       pros::motor_brake_mode_e_t preference = chassis.drive_brake_get();
       autonomous();
       chassis.drive_brake_set(preference);
     }
-
-    chassis.pid_tuner_iterate();
-  }
-
-  else {
-    if (chassis.pid_tuner_enabled())
-      chassis.pid_tuner_disable();
   }
 }
 
@@ -150,9 +138,9 @@ void opcontrol() {
     // chassis.opcontrol_arcade_flipped(ez::SPLIT);
     // chassis.opcontrol_arcade_flipped(ez::SINGLE);
 
-    arm_control();     // R1 = arm up / R2 = arm down
-    intake_control();  // L1 = intake in / L2 = intake out
-    claw_control();    // D-pad up/down = claw rollers in/out; A = clamp toggle
+    arm_control();     // lift: R1 up / R2 down
+    intake_control();  // L1 = intake / L2 = outtake
+    claw_control();    // X toggles claw rollers on/off; LEFT close / RIGHT open the clamp
 
     pros::delay(ez::util::DELAY_TIME);  //EZ uses this for timing
   }

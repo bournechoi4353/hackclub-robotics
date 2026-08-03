@@ -1,12 +1,11 @@
 #include "main.h"
-#include "mcl_checkpoint.hpp"
 
 // built on EZ-Template, docs at https://ez-robotics.github.io/EZ-Template/
 
 // all out of 127
-const int DRIVE_SPEED = 110;
-const int TURN_SPEED = 90;
-const int SWING_SPEED = 110;
+const int DRIVE_SPEED = 127;
+const int TURN_SPEED = 110;
+const int SWING_SPEED = 127;
 
 // milliseconds to wait between auton movements. change this one number; 0 = none
 const int PAUSE = 0;
@@ -107,57 +106,72 @@ void twoRed1Black() {
   chassis.pid_wait();
 }
 
-void oneRed1Black(){
-  chassis.pid_drive_set(12_in,DRIVE_SPEED, true);
+void threered(){
+  // real starting spot on the field: (-66, 0), facing center (+X) = 90 deg
+  chassis.odom_xyt_set(-66_in, 0_in, 90_deg);
+  mcl::start(-66.0, 0.0);  // passively corrects drift for the rest of the run (auto_flush is on by default)
+
+  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
   chassis.pid_turn_set(90_deg, TURN_SPEED);  
   chassis.pid_wait();
 
-  chassis.pid_drive_set(-24_in,DRIVE_SPEED, true);
+  
+  chassis.pid_drive_set(17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(-24_in,DRIVE_SPEED, true);
+  chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(28_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
   chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
   chassis.pid_wait();
+  chassis.pid_drive_set(32_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
 
-  chassis.pid_drive_set(26_in,DRIVE_SPEED, true);
+  chassis.pid_drive_set(-32_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+
+  chassis.pid_drive_set(26_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
   chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(26_in,DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(17_in,DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(-17_in,DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-
-  chassis.pid_turn_set(90_deg, TURN_SPEED);  
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(24_in,DRIVE_SPEED, true);
+    
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 }
 
 void skills() {
+  // real starting spot on the field: (0, -67), facing center (+Y) = 0 deg
+  chassis.odom_xyt_set(0_in, -67_in, 0_deg);
 
-  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
+  // --- shuttle-loop tuning (PLACEHOLDERS -- capture these on the field) ---
+  // front-sensor distance (mm) at the end of each goal approach. drive the
+  // segment once, read distanceFront.get() where it should stop, and drop the
+  // real number in. the field-tested encoder distances these replace are noted
+  // in comments on each drive_to_distance call below.
+  const int GOAL1_MM   = 60;   // was pid_drive_set(18_in)
+  const int GOAL2_MM   = 60;   // was pid_drive_set(13_in)
+  const int SQUARE_TOL = 20;   // left/right match tolerance (mm) for square_to_walls
 
   chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(8_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
   chassis.pid_turn_set(90_deg, TURN_SPEED);
@@ -166,31 +180,32 @@ void skills() {
   chassis.pid_drive_set(60_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  
- 
   for (int i = 0; i < 5; i++) {
+    // re-square at the START of every rep so heading error can't compound
+    // across reps. bounded + gated: self-aborts if the side sensors aren't on
+    // walls, so it never fights the IMU mid-field.
+    square_to_walls(SQUARE_TOL);
+
     chassis.pid_wait_until(3000);
     chassis.pid_drive_set(-13_in, DRIVE_SPEED, true);
     chassis.pid_wait();
 
-    chassis.pid_turn_set(-60_deg, TURN_SPEED);   
+    chassis.pid_turn_set(-60_deg, TURN_SPEED);
     chassis.pid_wait();
 
-    chassis.pid_drive_set(18_in, DRIVE_SPEED, true);
-    chassis.pid_wait();
+    // approach the goal on the front sensor, not a fixed 18" -- encoder drift
+    // has already compounded by here; the sensor sees the real gap.
+    drive_to_distance(distanceFront, GOAL1_MM, DRIVE_SPEED);
 
-    chassis.pid_wait_until(3000); 
+    chassis.pid_wait_until(3000);
 
     chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
     chassis.pid_wait();
 
-    chassis.pid_turn_set(90_deg, TURN_SPEED);    
+    chassis.pid_turn_set(90_deg, TURN_SPEED);
     chassis.pid_wait();
 
-    chassis.pid_drive_set(13_in, DRIVE_SPEED, true);
-    chassis.pid_wait();
-
-
+    drive_to_distance(distanceFront, GOAL2_MM, DRIVE_SPEED);  // was 13"
   }
   chassis.pid_drive_set(-60_in, DRIVE_SPEED, true);
   chassis.pid_wait();
@@ -202,6 +217,8 @@ void skills() {
   chassis.pid_wait();
 
   for (int i = 0; i < 5; i++) {
+    square_to_walls(SQUARE_TOL);
+
     chassis.pid_wait_until(3000);
     chassis.pid_drive_set(-13_in, DRIVE_SPEED, true);
     chassis.pid_wait();
@@ -209,10 +226,9 @@ void skills() {
     chassis.pid_turn_set(60_deg, TURN_SPEED);   // 90 - 150
     chassis.pid_wait();
 
-    chassis.pid_drive_set(18_in, DRIVE_SPEED, true);
-    chassis.pid_wait();
+    drive_to_distance(distanceFront, GOAL1_MM, DRIVE_SPEED);  // was 18"
 
-    chassis.pid_wait_until(3000); 
+    chassis.pid_wait_until(3000);
 
     chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
     chassis.pid_wait();
@@ -220,10 +236,7 @@ void skills() {
     chassis.pid_turn_set(-90_deg, TURN_SPEED);    // back to 90
     chassis.pid_wait();
 
-    chassis.pid_drive_set(13_in, DRIVE_SPEED, true);
-    chassis.pid_wait();
-
-
+    drive_to_distance(distanceFront, GOAL2_MM, DRIVE_SPEED);  // was 13"
   }
 }
 
