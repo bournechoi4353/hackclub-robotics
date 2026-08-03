@@ -2,15 +2,11 @@
 
 #include "api.h"
 
-// two independent 5.5W roller motors, plus the robot's one pneumatic (the clamp)
-extern pros::Motor rollerRight;
-extern pros::Motor rollerLeft;
-extern pros::adi::Pneumatics clawPiston;
+// roller motor group (2x 5.5W)
+extern pros::MotorGroup roller;
 
-// roller speeds for autons, -127..127 each (positive = in)
-void set_claw(int right_speed, int left_speed);
+// claw clamp -- NOT WIRED. only the standard rollers exist right now.
+// extern pros::adi::Pneumatics clawPiston;
 
-// driver control: UP toggles the right roller, DOWN toggles the left roller
-// (independently -- either, both, or neither can be spinning). LEFT closes
-// the clamp, RIGHT opens it.
-void claw_control();
+// roller speed for autons, -127..127 (positive = in)
+void set_claw(int speed);

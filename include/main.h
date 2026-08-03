@@ -47,8 +47,9 @@
 #include "ports.hpp"         // all robot ports + measurements, change them here
 #include "autons.hpp"
 #include "subsystems.hpp"
-#include "arm.hpp"           // lift subsystem (R1 up / R2 down in driver control)
-#include "claw.hpp"          // claw subsystem (2x independent 5.5W rollers + clamp pneumatic)
+#include "arm.hpp"           // lift subsystem (actuator only, see controls.hpp for buttons)
+#include "claw.hpp"          // claw subsystem (actuator only, see controls.hpp for buttons)
+#include "controls.hpp"      // every driver-control button binding lives here
 #include "motion_profile.hpp"
 #include "wall_align.hpp"   // closed-loop drive-to-distance + square-to-walls off the distance sensors
 #include "wall_reset.hpp"   // one-shot odom snap off the distance sensors (TitanReset-based)

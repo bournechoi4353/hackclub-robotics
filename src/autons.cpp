@@ -321,7 +321,7 @@ void motion_profile_test() {
 // deliberately wrong pose (so there's something to fix), then wall_reset()
 // should snap it back -- prints before/after so you can see it move.
 void wall_reset_test() {
-  chassis.odom_xyt_set(0_in, 0_in, chassis.odom_theta_get());  // wrong x/y on purpose
+  chassis.odom_xyt_set(0.0, 0.0, chassis.odom_theta_get());  // wrong x/y on purpose
   printf("Wall reset -- BEFORE: x:%.2f y:%.2f t:%.2f\n",
          chassis.odom_x_get(), chassis.odom_y_get(), chassis.odom_theta_get());
 

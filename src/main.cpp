@@ -115,9 +115,9 @@ void ez_screen_task() {
 pros::Task ezScreenTask(ez_screen_task);
 
 // EZ extras, only active off comp control: DOWN+B runs the selected auton
-// (note: DOWN alone also toggles the left roller via claw_control(), so
-// holding this combo will flip that roller on/off too -- harmless off comp
-// control, but worth knowing). PID tuner is disabled -- X is free.
+// (note: controls() also uses B for roller-out, so holding this combo spins
+// the roller too -- harmless off comp control, but worth knowing).
+// PID tuner is disabled -- X is free.
 void ez_template_extras() {
   if (!pros::competition::is_connected()) {
     if (master.get_digital(DIGITAL_B) && master.get_digital(DIGITAL_DOWN)) {
@@ -141,8 +141,7 @@ void opcontrol() {
     // chassis.opcontrol_arcade_flipped(ez::SPLIT);
     // chassis.opcontrol_arcade_flipped(ez::SINGLE);
 
-    arm_control();     // lift: R1 up / R2 down
-    claw_control();    // UP toggles right roller, DOWN toggles left roller; LEFT close / RIGHT open the clamp
+    controls();  // every driver-control button binding -- see controls.cpp
 
     pros::delay(ez::util::DELAY_TIME);  //EZ uses this for timing
   }
