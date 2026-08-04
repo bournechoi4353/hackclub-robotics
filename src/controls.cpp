@@ -5,8 +5,9 @@
 //  once, right here, and it's the only place you need to look.
 //
 //    Lift:   R2 up / L2 down
-//    Roller: R1 in / B out / L1 in  (all holds, no toggles)
-//    (claw clamp is commented out below -- not wired, standard rollers only)
+//    Intake: R1 in / B out  (hold, no toggle)
+//    Roller: L1 in  (hold, no toggle -- no separate out button)
+//    (claw clamp is commented out below -- not wired)
 // ============================================================
 void controls() {
   // ---- lift ----
@@ -18,15 +19,20 @@ void controls() {
     set_arm(0);     // stop (brake HOLD holds it in place)
   }
 
-  // ---- roller (all holds) ----
+  // ---- intake (hold) ----
   if (master.get_digital(DIGITAL_R1)) {
-    set_claw(127);   // in
+    set_intake(127);   // in
   } else if (master.get_digital(DIGITAL_B)) {
-    set_claw(-127);  // out
-  } else if (master.get_digital(DIGITAL_L1)) {
-    set_claw(127);   // in
+    set_intake(-127);  // out
   } else {
-    set_claw(0);
+    set_intake(0);
+  }
+
+  // ---- roller (hold, in only) ----
+  if (master.get_digital(DIGITAL_L1)) {
+    set_roller(127);   // in
+  } else {
+    set_roller(0);
   }
 
   // ---- claw clamp piston -- NOT WIRED ----

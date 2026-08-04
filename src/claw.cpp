@@ -8,6 +8,6 @@ pros::MotorGroup roller({ROLLER_RIGHT_PORT, ROLLER_LEFT_PORT}, pros::MotorGears:
 // pros::adi::Pneumatics clawPiston(CLAW_PISTON_PORT, false);
 
 // positive = in
-void set_claw(int speed) {
+void set_roller(int speed) {
   roller.move(speed);
 }

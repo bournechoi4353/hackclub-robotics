@@ -48,7 +48,8 @@
 #include "autons.hpp"
 #include "subsystems.hpp"
 #include "arm.hpp"           // lift subsystem (actuator only, see controls.hpp for buttons)
-#include "claw.hpp"          // claw subsystem (actuator only, see controls.hpp for buttons)
+#include "claw.hpp"          // claw roller subsystem (actuator only, see controls.hpp for buttons)
+#include "intake.hpp"        // intake subsystem, separate from the claw roller (actuator only)
 #include "controls.hpp"      // every driver-control button binding lives here
 #include "motion_profile.hpp"
 #include "wall_align.hpp"   // closed-loop drive-to-distance + square-to-walls off the distance sensors

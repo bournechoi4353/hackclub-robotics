@@ -9,4 +9,4 @@ extern pros::MotorGroup roller;
 // extern pros::adi::Pneumatics clawPiston;
 
 // roller speed for autons, -127..127 (positive = in)
-void set_claw(int speed);
+void set_roller(int speed);

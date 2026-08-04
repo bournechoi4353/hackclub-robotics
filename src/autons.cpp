@@ -46,6 +46,20 @@ void default_constants() {
   chassis.pid_angle_behavior_set(ez::shortest);  // default turns take the shortest way around
 }
 
+// open-loop push into a wall so the wall (not a PID target) squares the robot
+// up. a closed-loop swing fights to reach a commanded angle even after it's
+// pinned against the wall -- this just pushes for a fixed time and stops, no
+// target to fight over. direction is a guess (matching the RIGHT_SWING this
+// replaces) -- flip which side gets power if it swings the wrong way.
+void swing_into_wall(int left_power, int right_power, int duration_ms) {
+  uint32_t start = pros::millis();
+  while (pros::millis() - start < (uint32_t)duration_ms) {
+    chassis.drive_set(left_power, right_power);
+    pros::delay(ez::util::DELAY_TIME);
+  }
+  chassis.drive_set(0, 0);
+}
+
 // 2red1black match auton -- EZ's IMU-based PID drive + turns (IMU on port 9).
 void twoRed1Black() {
 
@@ -55,105 +69,95 @@ void twoRed1Black() {
   chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  arm.move_absolute(ARM_LOW_POS, 110);   
-
-  chassis.pid_drive_set(17_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  chassis.pid_turn_set(-90_deg, TURN_SPEED);  
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  
-  chassis.pid_drive_set(17_in, DRIVE_SPEED, true);
+  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
   chassis.pid_wait();
 
-  arm.move_absolute(ARM_REST_POS, 110);
-  pros::delay(1000);  
 
-  chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED); 
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-38_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(-24_in, DRIVE_SPEED, true);
+  chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
   chassis.pid_wait();
 
-  arm.move_absolute(ARM_LOW_POS, 110); 
-  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(24_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  arm.move_absolute(ARM_REST_POS, 110);
-  pros::delay(1000);  
-
-  chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
+  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
-  chassis.pid_turn_relative_set(180_deg, TURN_SPEED);
+  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
   chassis.pid_wait();
-
-
-  chassis.pid_drive_set(23_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
+  chassis.pid_drive_set(-35_in, DRIVE_SPEED, true);
+  chassis.pid_wait();  // full settle -- last move, nothing left to chain into
 }
 
 void threered(){
   // real starting spot on the field: (-66, 0), facing center (+X) = 90 deg
-  chassis.odom_xyt_set(-66_in, 0_in, 90_deg);
-  mcl::start(-66.0, 0.0);  // passively corrects drift for the rest of the run (auto_flush is on by default)
 
-  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(17_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
   chassis.pid_turn_set(90_deg, TURN_SPEED);  
   chassis.pid_wait();
 
   
-  chassis.pid_drive_set(17_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
   chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(28_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(-28_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
   chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
   chassis.pid_wait();
-  chassis.pid_drive_set(32_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(-32_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(-32_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(32_in, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
   chassis.pid_wait();
 
 
-  chassis.pid_drive_set(26_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
   chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
   chassis.pid_wait();
 
     
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 }
+
+
+
 
 void skills() {
   // real starting spot on the field: (0, -67), facing center (+Y) = 0 deg
@@ -251,7 +255,11 @@ void arm_height_test() {
   arm.tare_position();  // 0 = wherever the arm is resting right now
 
   const int ARM_VEL = 100;  // move speed in deg/sec (green cartridge tops out ~200)
-  double heights[] = {ARM_LOW_POS, ARM_MID_POS, ARM_HIGH_POS, ARM_REST_POS};
+  double heights[] = {ARM_PIN1_PLACE_POS, ARM_PIN1_HOVER_POS,
+                       ARM_PIN2_PLACE_POS, ARM_PIN2_HOVER_POS,
+                       ARM_PIN3_PLACE_POS, ARM_PIN3_HOVER_POS,
+                       ARM_PIN4_PLACE_POS, ARM_PIN4_HOVER_POS,
+                       ARM_REST_POS};
 
   for (double h : heights) {
     arm.move_absolute(h, ARM_VEL);
@@ -262,6 +270,36 @@ void arm_height_test() {
                          "\ntarget: " + util::to_string_with_precision(h) +
                          "\nactual: " + util::to_string_with_precision(arm.get_position()),
                      1);
+  }
+}
+
+// live capture tool for pin heights. tares at 0 (resting position), sets the
+// arm to COAST so it moves freely by hand (it's HOLD brake normally, which
+// would fight you), then shows the live encoder position on screen -- push it
+// to each pin count's real height and write down the number. R2/L2 still work
+// too if you'd rather jog it than push it. no auto-stepping, runs forever;
+// pick a different auton (or restart) to exit.
+void arm_height_capture() {
+  arm.tare_position();  // 0 = resting position (0 pins)
+  arm.set_brake_mode(pros::MotorBrake::coast);  // free to push by hand
+
+  while (true) {
+    if (master.get_digital(DIGITAL_R2)) {
+      set_arm(127);   // full up
+    } else if (master.get_digital(DIGITAL_L2)) {
+      set_arm(-127);  // full down
+    } else {
+      set_arm(0);
+    }
+
+    printf("Arm height capture -> position: %.1f\n", arm.get_position());
+    ez::screen_print("Arm height capture"
+                         "\nposition: " + util::to_string_with_precision(arm.get_position()) +
+                         "\n(push by hand, or R2 up / L2 down, 0 = rest)"
+                         "\nmove to each pin height, write down the number",
+                     1);
+
+    pros::delay(ez::util::DELAY_TIME);
   }
 }
 

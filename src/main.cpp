@@ -41,6 +41,7 @@ void initialize() {
       {"threered\n\nMatch auton: drive + turns (EZ IMU PID)", threered},
       {"Skills\n\nProgramming skills run (60s solo)", skills},
       {"Arm Height Test\n\nCycles the arm through low/mid/high presets (move_absolute), prints encoder pos", arm_height_test},
+      {"Arm Height Capture\n\nJog the arm by hand (R2/L2), screen shows live position -- write down the number at each pin height", arm_height_capture},
       {"PID Square\n\n48in square (straights + 90 turns), tune drive/turn PID by how well it closes", pid_square},
       {"Motion Profile\n\nTrapezoidal profiled drive 48in, print traveled distance", motion_profile_test},
       {"Odom Spin\n\nMotor pivots in place; reports x/y drift (should be ~0)", odom_spin_test},

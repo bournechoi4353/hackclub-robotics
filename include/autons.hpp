@@ -3,8 +3,16 @@
 // all the PID/odom tuning, gets called in initialize()
 void default_constants();
 
+// open-loop push into a wall to let the wall square the robot up -- no PID
+// target angle on purpose (the wall decides the final heading, not us).
+void swing_into_wall(int left_power, int right_power, int duration_ms);
+
 // cycles the arm through the preset heights so you can check/capture them
 void arm_height_test();
+
+// live capture tool: jog the arm by hand, screen shows the current encoder
+// position so you can write down the number at each pin height (0 = rest)
+void arm_height_capture();
 
 // 2red1black match auton: drive + turn via EZ's IMU PID
 void twoRed1Black();
