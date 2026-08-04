@@ -12,13 +12,15 @@ struct sensor_mount {
   double facing_deg;     // CW from the robot's front
 };
 
-// ports.hpp holds the actual measured numbers -- this is the same table
-// mcl.cpp reads, so there's one place to update after re-measuring.
-const sensor_mount SENSORS[] = {
-    {&distanceFront, DIST_FRONT_OFF_X, DIST_FRONT_OFF_Y, DIST_FRONT_FACING},
-    {&distanceRight, DIST_RIGHT_OFF_X, DIST_RIGHT_OFF_Y, DIST_RIGHT_FACING},
-    {&distanceLeft,  DIST_LEFT_OFF_X,  DIST_LEFT_OFF_Y,  DIST_LEFT_FACING},
-};
+// distance sensors are DISABLED for now (see ports.hpp) -- SENSORS is empty,
+// wall_reset() below just returns false immediately. uncomment the table once
+// the sensors are wired back in.
+const sensor_mount SENSORS[] = {};
+// const sensor_mount SENSORS[] = {
+//     {&distanceFront, DIST_FRONT_OFF_X, DIST_FRONT_OFF_Y, DIST_FRONT_FACING},
+//     {&distanceRight, DIST_RIGHT_OFF_X, DIST_RIGHT_OFF_Y, DIST_RIGHT_FACING},
+//     {&distanceLeft,  DIST_LEFT_OFF_X,  DIST_LEFT_OFF_Y,  DIST_LEFT_FACING},
+// };
 
 const int    MIN_CONFIDENCE = 30;    // 0-63, same gate the rest of the project uses
 const double MIN_DIST_IN    = 2.0;

@@ -77,7 +77,12 @@ void drive_to_distance(pros::Distance& sensor, int target_mm, int max_speed) {
   chassis.drive_set(0, 0);
 }
 
+// distance sensors are DISABLED for now (see ports.hpp) -- this is a safe
+// no-op until they're wired back in (uncomment the body below).
 void square_to_walls(int tolerance_mm) {
+  return;
+
+  /*
   double applied = 0.0;
 
   for (int i = 0; i < SQ_MAX_ITERS; i++) {
@@ -100,4 +105,5 @@ void square_to_walls(int tolerance_mm) {
     chassis.pid_wait();
     applied += turn;
   }
+  */
 }

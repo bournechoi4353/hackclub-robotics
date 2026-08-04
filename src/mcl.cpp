@@ -317,16 +317,16 @@ void mcl::sensors_set(const std::vector<mcl::sensor_cfg>& s) {
 void mcl::start(double x, double y, double seed_spread) {
   mtx.take();
 
-  // sensor geometry lives in ports.hpp (shared with wall_reset.cpp). beam_height
-  // is just a note, but 9-10" is high and may shoot over a short field wall,
-  // which shows up as gated side beams.
-  if (sensors.empty()) {
-    sensors = {
-        {&distanceFront, DIST_FRONT_OFF_X, DIST_FRONT_OFF_Y, DIST_FRONT_FACING,  5.5},
-        {&distanceRight, DIST_RIGHT_OFF_X, DIST_RIGHT_OFF_Y, DIST_RIGHT_FACING, 10.0},
-        {&distanceLeft,  DIST_LEFT_OFF_X,  DIST_LEFT_OFF_Y,  DIST_LEFT_FACING,   9.0},
-    };
-  }
+  // distance sensors are DISABLED for now (see ports.hpp) -- sensors stays
+  // empty, so MCL runs but never gets beam corrections. uncomment once the
+  // sensors are wired back in.
+  // if (sensors.empty()) {
+  //   sensors = {
+  //       {&distanceFront, DIST_FRONT_OFF_X, DIST_FRONT_OFF_Y, DIST_FRONT_FACING,  5.5},
+  //       {&distanceRight, DIST_RIGHT_OFF_X, DIST_RIGHT_OFF_Y, DIST_RIGHT_FACING, 10.0},
+  //       {&distanceLeft,  DIST_LEFT_OFF_X,  DIST_LEFT_OFF_Y,  DIST_LEFT_FACING,   9.0},
+  //   };
+  // }
 
   rng.seed(static_cast<unsigned>(pros::micros()));
 

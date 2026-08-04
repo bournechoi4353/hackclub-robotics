@@ -61,18 +61,10 @@ void swing_into_wall(int left_power, int right_power, int duration_ms) {
 }
 
 // 2red1black match auton -- EZ's IMU-based PID drive + turns (IMU on port 9).
-void twoRed1Black() {
+void redRightQuals() {
 
-  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
 
-  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
   chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
@@ -109,51 +101,73 @@ void twoRed1Black() {
   chassis.pid_wait();  // full settle -- last move, nothing left to chain into
 }
 
-void threered(){
-  // real starting spot on the field: (-66, 0), facing center (+X) = 90 deg
-
-  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_turn_set(90_deg, TURN_SPEED);  
-  chassis.pid_wait();
-
-  
-  chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(17_in, DRIVE_SPEED, true);
+void redRightElim() {
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
   chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(-28_in, DRIVE_SPEED, true);
+
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-32_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(32_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-
-  chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
   chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
   chassis.pid_wait();
-
-    
+  chassis.pid_drive_set(-27_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-29_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(13_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-45_in, 80, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(24_in, 90, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
+  chassis.pid_wait();
   chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
+}
+
+
+void redRightYellows(){
+  chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-34_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-34_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
 }
 
 
@@ -197,9 +211,10 @@ void skills() {
     chassis.pid_turn_set(-60_deg, TURN_SPEED);
     chassis.pid_wait();
 
-    // approach the goal on the front sensor, not a fixed 18" -- encoder drift
-    // has already compounded by here; the sensor sees the real gap.
-    drive_to_distance(distanceFront, GOAL1_MM, DRIVE_SPEED);
+    // distance sensor is DISABLED for now -- back to the fixed distance this
+    // replaced. drive_to_distance(distanceFront, GOAL1_MM, DRIVE_SPEED);
+    chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
+    chassis.pid_wait();
 
     chassis.pid_wait_until(3000);
 
@@ -209,7 +224,9 @@ void skills() {
     chassis.pid_turn_set(90_deg, TURN_SPEED);
     chassis.pid_wait();
 
-    drive_to_distance(distanceFront, GOAL2_MM, DRIVE_SPEED);  // was 13"
+    // drive_to_distance(distanceFront, GOAL2_MM, DRIVE_SPEED);  // was 13"
+    chassis.pid_drive_set(-13_in, DRIVE_SPEED, true);
+    chassis.pid_wait();
   }
   chassis.pid_drive_set(-60_in, DRIVE_SPEED, true);
   chassis.pid_wait();
@@ -230,7 +247,9 @@ void skills() {
     chassis.pid_turn_set(60_deg, TURN_SPEED);   // 90 - 150
     chassis.pid_wait();
 
-    drive_to_distance(distanceFront, GOAL1_MM, DRIVE_SPEED);  // was 18"
+    // drive_to_distance(distanceFront, GOAL1_MM, DRIVE_SPEED);  // was 18"
+    chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
+    chassis.pid_wait();
 
     chassis.pid_wait_until(3000);
 
@@ -240,7 +259,9 @@ void skills() {
     chassis.pid_turn_set(-90_deg, TURN_SPEED);    // back to 90
     chassis.pid_wait();
 
-    drive_to_distance(distanceFront, GOAL2_MM, DRIVE_SPEED);  // was 13"
+    // drive_to_distance(distanceFront, GOAL2_MM, DRIVE_SPEED);  // was 13"
+    chassis.pid_drive_set(-13_in, DRIVE_SPEED, true);
+    chassis.pid_wait();
   }
 }
 

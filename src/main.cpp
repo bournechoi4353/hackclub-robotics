@@ -13,6 +13,22 @@ ez::Drive chassis(
 
 ez::tracking_wheel horiz_tracker(HORIZ_TRACKER_PORT, HORIZ_TRACKER_DIAMETER, HORIZ_TRACKER_OFFSET);
 
+// controller-screen auton selector -- ONLY the real match autons (the other
+// entries in autons_add() are test/debug tools, not used in competition).
+// must be the first N entries of autons_add(), in the same order.
+std::vector<std::string> auton_names = {
+    "redRightQuals",
+    "redRightElim",
+    "redRightYellows",
+};
+
+int controller_auton_index = 0;
+
+void controller_screen_update() {
+  master.clear_line(0);
+  master.set_text(0, 0, auton_names[controller_auton_index]);
+}
+
 // runs as soon as the program starts
 void initialize() {
   ez::ez_template_print();
@@ -37,8 +53,9 @@ void initialize() {
 
   // auton selector (brain screen). first entry = default
   ez::as::auton_selector.autons_add({
-      {"2red1black\n\nMatch auton: drive + turns + arm (EZ IMU PID)", twoRed1Black},
-      {"threered\n\nMatch auton: drive + turns (EZ IMU PID)", threered},
+      {"yellow in middle + color", redRightQuals},
+      {"4 pins (wall yellow)", redRightElim},
+      {"yellows in middle", redRightYellows},
       {"Skills\n\nProgramming skills run (60s solo)", skills},
       {"Arm Height Test\n\nCycles the arm through low/mid/high presets (move_absolute), prints encoder pos", arm_height_test},
       {"Arm Height Capture\n\nJog the arm by hand (R2/L2), screen shows live position -- write down the number at each pin height", arm_height_capture},
@@ -52,6 +69,7 @@ void initialize() {
   chassis.initialize();
   ez::as::initialize();
   master.rumble(chassis.drive_imu_calibrated() ? "." : "---");
+  controller_screen_update();
 }
 
 // runs while disabled at comp
@@ -59,9 +77,35 @@ void disabled() {
   // . . .
 }
 
-// runs before auton when connected to field control
+// runs before auton when connected to field control.
+// page_up()/page_down() step through the REAL selector, which still has all
+// the test/debug autons behind these 3 -- so wrapping around (3rd -> 1st or
+// 1st -> 3rd) has to take that many real steps instead of just one, or the
+// real selection and this screen would drift apart.
 void competition_initialize() {
-  // . . .
+  while (true) {
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+      if (controller_auton_index == 0) {
+        for (size_t i = 0; i < auton_names.size() - 1; i++) ez::as::page_up();
+        controller_auton_index = auton_names.size() - 1;
+      } else {
+        ez::as::page_down();
+        controller_auton_index--;
+      }
+      controller_screen_update();
+    } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+      if (controller_auton_index == auton_names.size() - 1) {
+        for (size_t i = 0; i < auton_names.size() - 1; i++) ez::as::page_down();
+        controller_auton_index = 0;
+      } else {
+        ez::as::page_up();
+        controller_auton_index++;
+      }
+      controller_screen_update();
+    }
+
+    pros::delay(ez::util::DELAY_TIME);
+  }
 }
 
 void autonomous() {

@@ -15,10 +15,13 @@ void arm_height_test();
 void arm_height_capture();
 
 // 2red1black match auton: drive + turn via EZ's IMU PID
-void twoRed1Black();
+void redRightQuals();
 
-// threered match auton: drive + turn via EZ's IMU PID
-void threered();
+// 1red3black match auton
+void redRightElim();
+
+// rightYellow match auton: drive + turn via EZ's IMU PID
+void redRightYellows();
 
 // programming skills run (60s solo)
 void skills();
