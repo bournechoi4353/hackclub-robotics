@@ -101,6 +101,46 @@ void redRightQuals() {
   chassis.pid_wait();  // full settle -- last move, nothing left to chain into
 }
 
+void redLeftQuals() {
+
+
+  chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-38_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-35_in, DRIVE_SPEED, true);
+  chassis.pid_wait();  // full settle -- last move, nothing left to chain into
+}
+
 void redRightElim() {
   chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
@@ -115,30 +155,105 @@ void redRightElim() {
   chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
-  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-27_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-29_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(13_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
-  chassis.pid_wait();
   chassis.pid_drive_set(-45_in, 80, true);
   chassis.pid_wait();
-  chassis.pid_drive_set(24_in, 90, true);
+  chassis.pid_drive_set(-27_in,90, true);
   chassis.pid_wait();
-  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
+  chassis.pid_drive_set(27_in, 100, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(45_in, 80, true);
   chassis.pid_wait();
   chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-135_deg, 90);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-27_in, 80, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(27_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-45_in, 80, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+
 }
 
+void redLeftElim() {
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(45_in, 80, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-27_in,90, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(27_in, 100, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-45_in, 80, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(135_deg, 90);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-27_in, 80, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(27_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(45_in, 80, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+
+}
 
 void redRightYellows(){
+  chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-34_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-34_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+}
+
+void redLeftYellows(){
   chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
@@ -169,9 +284,230 @@ void redRightYellows(){
   chassis.pid_wait();
 
 }
+//--------------------------------------------------------------------------------------
+void blueRightQuals() {
 
 
+  chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
 
+  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-38_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-35_in, DRIVE_SPEED, true);
+  chassis.pid_wait();  // full settle -- last move, nothing left to chain into
+}
+
+void blueLeftQuals() {
+
+
+  chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-38_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-35_in, DRIVE_SPEED, true);
+  chassis.pid_wait();  // full settle -- last move, nothing left to chain into
+}
+
+void blueRightElim() {
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-45_in, 80, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-27_in,90, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(27_in, 100, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(45_in, 80, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-135_deg, 90);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-27_in, 80, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(27_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-45_in, 80, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+
+}
+
+void blueLeftElim() {
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
+  chassis.pid_wait();
+
+
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(45_in, 80, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-27_in,90, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(27_in, 100, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-45_in, 80, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(135_deg, 90);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-27_in, 80, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(27_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(45_in, 80, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+
+}
+
+void blueRightYellows(){
+  chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-34_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-34_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+}
+
+void blueLeftYellows(){
+  chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-34_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-34_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
+}
 
 void skills() {
   // real starting spot on the field: (0, -67), facing center (+Y) = 0 deg
