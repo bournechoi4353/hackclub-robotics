@@ -14,14 +14,21 @@ void arm_height_test();
 // position so you can write down the number at each pin height (0 = rest)
 void arm_height_capture();
 
-// 2red1black match auton: drive + turn via EZ's IMU PID
+// ---- match autons: red ----
 void redRightQuals();
-
-// 1red3black match auton
+void redLeftQuals();
 void redRightElim();
-
-// rightYellow match auton: drive + turn via EZ's IMU PID
+void redLeftElim();
 void redRightYellows();
+void redLeftYellows();
+
+// ---- match autons: blue (same routines, mirrored/recolored) ----
+void blueRightQuals();
+void blueLeftQuals();
+void blueRightElim();
+void blueLeftElim();
+void blueRightYellows();
+void blueLeftYellows();
 
 // programming skills run (60s solo)
 void skills();

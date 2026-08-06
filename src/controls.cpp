@@ -4,10 +4,9 @@
 //  ALL driver-control button bindings live here. change a button? change it
 //  once, right here, and it's the only place you need to look.
 //
-//    Lift:   R2 up / L2 down
-//    Intake: R1 in / B out  (hold, no toggle)
-//    Roller: L1 in  (hold, no toggle -- no separate out button)
-//    (claw clamp is commented out below -- not wired)
+//    Lift:  R2 up / L2 down
+//    Roller: DOWN in  (hold, no toggle -- no separate out button)
+//    Claw:  R1 opens clawPiston / L1 closes it (press, not hold)
 // ============================================================
 void controls() {
   // ---- lift ----
@@ -19,24 +18,17 @@ void controls() {
     set_arm(0);     // stop (brake HOLD holds it in place)
   }
 
-  // ---- intake (hold) ----
-  if (master.get_digital(DIGITAL_R1)) {
-    set_intake(127);   // in
-  } else if (master.get_digital(DIGITAL_B)) {
-    set_intake(-127);  // out
-  } else {
-    set_intake(0);
-  }
-
   // ---- roller (hold, in only) ----
-  if (master.get_digital(DIGITAL_L1)) {
+  if (master.get_digital(DIGITAL_DOWN)) {
     set_roller(127);   // in
   } else {
     set_roller(0);
   }
 
-  // ---- claw clamp piston -- NOT WIRED ----
-  // if (master.get_digital_new_press(DIGITAL_DOWN)) {
-  //   clawPiston.toggle();  // "claw straight"
-  // }
+  // ---- claw clamp piston: R1 opens, L1 closes (press, holds last state) ----
+  if (master.get_digital_new_press(DIGITAL_R1)) {
+    clawPiston.extend();   // open
+  } else if (master.get_digital_new_press(DIGITAL_L1)) {
+    clawPiston.retract();  // close
+  }
 }

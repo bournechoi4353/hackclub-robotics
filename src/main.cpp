@@ -1,4 +1,5 @@
 #include "main.h"
+#include "brain_screen.hpp"
 
 // built on EZ-Template, docs at https://ez-robotics.github.io/EZ-Template/
 
@@ -18,15 +19,24 @@ ez::tracking_wheel horiz_tracker(HORIZ_TRACKER_PORT, HORIZ_TRACKER_DIAMETER, HOR
 // must be the first N entries of autons_add(), in the same order.
 std::vector<std::string> auton_names = {
     "redRightQuals",
+    "redLeftQuals",
     "redRightElim",
+    "redLeftElim",
     "redRightYellows",
+    "redLeftYellows",
+    "blueRightQuals",
+    "blueLeftQuals",
+    "blueRightElim",
+    "blueLeftElim",
+    "blueRightYellows",
+    "blueLeftYellows",
 };
 
 int controller_auton_index = 0;
 
 void controller_screen_update() {
   master.clear_line(0);
-  master.set_text(0, 0, auton_names[controller_auton_index]);
+  master.set_text(0, 0, brain_screen.selected_name());
 }
 
 // runs as soon as the program starts
@@ -54,8 +64,17 @@ void initialize() {
   // auton selector (brain screen). first entry = default
   ez::as::auton_selector.autons_add({
       {"yellow in middle + color", redRightQuals},
+      {"yellow in middle + color", redLeftQuals},
       {"4 pins (wall yellow)", redRightElim},
+      {"4 pins (wall yellow)", redLeftElim},
       {"yellows in middle", redRightYellows},
+      {"yellows in middle", redLeftYellows},
+      {"yellow in middle + color", blueRightQuals},
+      {"yellow in middle + color", blueLeftQuals},
+      {"4 pins (wall yellow)", blueRightElim},
+      {"4 pins (wall yellow)", blueLeftElim},
+      {"yellows in middle", blueRightYellows},
+      {"yellows in middle", blueLeftYellows},
       {"Skills\n\nProgramming skills run (60s solo)", skills},
       {"Arm Height Test\n\nCycles the arm through low/mid/high presets (move_absolute), prints encoder pos", arm_height_test},
       {"Arm Height Capture\n\nJog the arm by hand (R2/L2), screen shows live position -- write down the number at each pin height", arm_height_capture},
@@ -67,7 +86,11 @@ void initialize() {
   });
 
   chassis.initialize();
-  ez::as::initialize();
+
+  // custom LVGL auton selector -- replaces ez::as::initialize()'s screen.
+  // (EZ's autons_add above is left in place but its screen is no longer shown.)
+  brain_screen_init();
+
   master.rumble(chassis.drive_imu_calibrated() ? "." : "---");
   controller_screen_update();
 }
@@ -77,30 +100,20 @@ void disabled() {
   // . . .
 }
 
-// runs before auton when connected to field control.
-// page_up()/page_down() step through the REAL selector, which still has all
-// the test/debug autons behind these 3 -- so wrapping around (3rd -> 1st or
-// 1st -> 3rd) has to take that many real steps instead of just one, or the
-// real selection and this screen would drift apart.
+// runs before auton when connected to field control. LEFT/RIGHT on the
+// controller cycle ONLY the real match autons (the first auton_names.size()
+// entries of the brain selector, in the same order) so drivers can't land on a
+// test routine at comp. The brain touchscreen can still reach everything.
 void competition_initialize() {
   while (true) {
     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
-      if (controller_auton_index == 0) {
-        for (size_t i = 0; i < auton_names.size() - 1; i++) ez::as::page_up();
-        controller_auton_index = auton_names.size() - 1;
-      } else {
-        ez::as::page_down();
-        controller_auton_index--;
-      }
+      controller_auton_index =
+          (controller_auton_index - 1 + auton_names.size()) % auton_names.size();
+      brain_screen.select(controller_auton_index);
       controller_screen_update();
     } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-      if (controller_auton_index == auton_names.size() - 1) {
-        for (size_t i = 0; i < auton_names.size() - 1; i++) ez::as::page_down();
-        controller_auton_index = 0;
-      } else {
-        ez::as::page_up();
-        controller_auton_index++;
-      }
+      controller_auton_index = (controller_auton_index + 1) % auton_names.size();
+      brain_screen.select(controller_auton_index);
       controller_screen_update();
     }
 
@@ -115,7 +128,7 @@ void autonomous() {
   chassis.odom_xyt_set(0_in, 0_in, 0_deg);
   chassis.drive_brake_set(MOTOR_BRAKE_HOLD);  // hold helps consistency
 
-  ez::as::auton_selector.selected_auton_call();
+  brain_screen.run_selected();
 }
 
 // print a tracker's value + width on the brain screen
@@ -129,6 +142,9 @@ void screen_print_tracker(ez::tracking_wheel *tracker, std::string name, int lin
 }
 
 // extra debug pages on the brain screen (only off comp)
+// NOTE: disabled in favor of custom brain_screen above
+// Uncomment below to re-enable EZ template debug pages
+/*
 void ez_screen_task() {
   while (true) {
     if (!pros::competition::is_connected()) {
@@ -158,6 +174,7 @@ void ez_screen_task() {
   }
 }
 pros::Task ezScreenTask(ez_screen_task);
+*/
 
 // EZ extras, only active off comp control: DOWN+B runs the selected auton
 // (note: controls() also uses B for roller-out, so holding this combo spins

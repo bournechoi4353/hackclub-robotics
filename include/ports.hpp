@@ -41,13 +41,9 @@ constexpr double ARM_PIN4_HOVER_POS = 1900;
 constexpr int ROLLER_RIGHT_PORT = 3;
 constexpr int ROLLER_LEFT_PORT  = -8;
 
-//  intake: 2x 5.5W motors as one group (negative port = reversed), separate
-//  mechanism from the roller above. PLACEHOLDERS -- swap for the real ports.
-constexpr int INTAKE_RIGHT_PORT = 1;
-constexpr int INTAKE_LEFT_PORT  = 2;
-//  claw clamp, the robot's only pneumatic (ADI port 'A'-'H') -- NOT WIRED,
-//  kept here in case it gets added later
-constexpr char CLAW_PISTON_PORT = 'H';
+//  claw clamp, the robot's only pneumatic (ADI port 'A'-'H'). R1 opens it,
+//  L1 closes it (see controls.cpp).
+constexpr char CLAW_PISTON_PORT = 'A';
 
 //  distance sensors -- DISABLED for now, commented out to avoid any issues
 //  (port conflicts, stale sensor roles, etc). uncomment when actually wiring

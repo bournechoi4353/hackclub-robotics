@@ -4,8 +4,8 @@
 // green). sign is a default, flip the ports in ports.hpp if it spins wrong.
 pros::MotorGroup roller({ROLLER_RIGHT_PORT, ROLLER_LEFT_PORT}, pros::MotorGears::green);
 
-// claw clamp -- NOT WIRED. only the standard rollers exist right now.
-// pros::adi::Pneumatics clawPiston(CLAW_PISTON_PORT, false);
+// claw clamp piston: open/close. starts retracted (closed).
+pros::adi::Pneumatics clawPiston(CLAW_PISTON_PORT, false);
 
 // positive = in
 void set_roller(int speed) {
