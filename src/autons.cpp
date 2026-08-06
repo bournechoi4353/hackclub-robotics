@@ -62,7 +62,15 @@ void swing_into_wall(int left_power, int right_power, int duration_ms) {
 
 // 2red1black match auton -- EZ's IMU-based PID drive + turns (IMU on port 9).
 void redRightQuals() {
-
+  //toggle
+  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
 
   chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
@@ -102,7 +110,15 @@ void redRightQuals() {
 }
 
 void redLeftQuals() {
-
+  //toggle
+  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
 
   chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
@@ -142,6 +158,7 @@ void redLeftQuals() {
 }
 
 void redRightElim() {
+
   chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
@@ -286,7 +303,15 @@ void redLeftYellows(){
 }
 //--------------------------------------------------------------------------------------
 void blueRightQuals() {
-
+  //toggle
+  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
 
   chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
@@ -326,7 +351,15 @@ void blueRightQuals() {
 }
 
 void blueLeftQuals() {
-
+  //toggle
+  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
 
   chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
