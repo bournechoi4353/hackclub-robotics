@@ -17,7 +17,9 @@ constexpr double HORIZ_TRACKER_DIAMETER = 3.25;
 constexpr double HORIZ_TRACKER_OFFSET   = -7.61;
 
 //  lift: single motor
-constexpr int LIFT_PORT = 7;
+constexpr int LIFT_PORT = -7;
+constexpr int LIFT2_PORT = 9;
+
 
 //  arm/lift height presets (motor-encoder degrees), captured via "Arm Height
 //  Capture". PLACE = height to actually set the pin down, HOVER = a bit
@@ -38,8 +40,8 @@ constexpr double ARM_PIN4_HOVER_POS = 1900;
 
 //  claw roller: 2x 5.5W motors as one group (negative port = reversed).
 //  PLACEHOLDERS -- swap these for the real ports once it's wired.
-constexpr int ROLLER_RIGHT_PORT = 3;
-constexpr int ROLLER_LEFT_PORT  = -8;
+constexpr int ROLLER_RIGHT_PORT = -21;
+constexpr int ROLLER_LEFT_PORT  = 3;
 
 //  claw clamp, the robot's only pneumatic (ADI port 'A'-'H'). R1 opens it,
 //  L1 closes it (see controls.cpp).
