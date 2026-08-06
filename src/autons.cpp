@@ -782,3 +782,8 @@ void mcl_test() {
     pros::delay(ez::util::DELAY_TIME);
   }
 }
+
+void toggle_test() {
+  chassis.pid_drive_set(3_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+}
