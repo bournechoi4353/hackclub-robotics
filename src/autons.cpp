@@ -63,98 +63,117 @@ void swing_into_wall(int left_power, int right_power, int duration_ms) {
 // 2red1black match auton -- EZ's IMU-based PID drive + turns (IMU on port 9).
 void redRightQuals() {
   //toggle
-  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
   chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
+  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+
 
   chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
+  arm.move_absolute(400, 100);
   chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
   chassis.pid_wait();
 
 
   chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
+  arm.move_absolute(200, 100);
+  clawPiston.extend();
   chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(-38_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
+  clawPiston.retract();
+  arm.move_absolute(800, 100);
   chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
+  arm.move_absolute(400, 100);
   chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
+  clawPiston.extend();
 
   chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
   chassis.pid_wait();
+  clawPiston.retract();
   chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
   chassis.pid_wait();
+  arm.move_absolute(400, 100);
+
   chassis.pid_drive_set(-35_in, DRIVE_SPEED, true);
   chassis.pid_wait();  // full settle -- last move, nothing left to chain into
+  arm.move_absolute(300, 100);
+  clawPiston.extend();
+
+
 }
 
 void redLeftQuals() {
   //toggle
-  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
   chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
+  arm.move_absolute(400, 100);
   chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
   chassis.pid_wait();
 
 
   chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
+  arm.move_absolute(200, 100);
+  clawPiston.extend();
   chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(-38_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
+  clawPiston.retract();
+  arm.move_absolute(800, 100);
   chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
+  arm.move_absolute(400, 100);
   chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
+  clawPiston.extend();
 
   chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
   chassis.pid_wait();
+  clawPiston.retract();
   chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
   chassis.pid_wait();
+  arm.move_absolute(400, 100);
+
   chassis.pid_drive_set(-35_in, DRIVE_SPEED, true);
   chassis.pid_wait();  // full settle -- last move, nothing left to chain into
+  arm.move_absolute(300, 100);
+  clawPiston.extend();
 }
 
 void redRightElim() {

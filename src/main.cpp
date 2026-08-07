@@ -14,7 +14,7 @@ ez::Drive chassis(
 
 ez::tracking_wheel horiz_tracker(HORIZ_TRACKER_PORT, HORIZ_TRACKER_DIAMETER, HORIZ_TRACKER_OFFSET);
 
-// controller-screen auton selector -- ONLY the real match autons (the other
+// LEFT/RIGHT on the controller cycle ONLY the real match autons (the other
 // entries in autons_add() are test/debug tools, not used in competition).
 // must be the first N entries of autons_add(), in the same order.
 std::vector<std::string> auton_names = {
@@ -31,13 +31,6 @@ std::vector<std::string> auton_names = {
     "blueRightYellows",
     "blueLeftYellows",
 };
-
-int controller_auton_index = 0;
-
-void controller_screen_update() {
-  master.clear_line(0);
-  master.set_text(0, 0, brain_screen.selected_name());
-}
 
 // runs as soon as the program starts
 void initialize() {
@@ -92,7 +85,6 @@ void initialize() {
   brain_screen_init();
 
   master.rumble(chassis.drive_imu_calibrated() ? "." : "---");
-  controller_screen_update();
 }
 
 // runs while disabled at comp
@@ -104,17 +96,24 @@ void disabled() {
 // controller cycle ONLY the real match autons (the first auton_names.size()
 // entries of the brain selector, in the same order) so drivers can't land on a
 // test routine at comp. The brain touchscreen can still reach everything.
+// Reads/writes brain_screen.selected_index() directly -- no separate index to
+// go stale, so whatever the brain is showing is exactly what autonomous()
+// will run.
 void competition_initialize() {
   while (true) {
-    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
-      controller_auton_index =
-          (controller_auton_index - 1 + auton_names.size()) % auton_names.size();
-      brain_screen.select(controller_auton_index);
-      controller_screen_update();
-    } else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-      controller_auton_index = (controller_auton_index + 1) % auton_names.size();
-      brain_screen.select(controller_auton_index);
-      controller_screen_update();
+    bool left = master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT);
+    bool right = master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT);
+
+    if (left || right) {
+      int idx = brain_screen.selected_index();
+      // if the brain is currently on a test/debug auton (off comp control
+      // testing left it there), snap into match range first
+      if (idx >= (int)auton_names.size()) idx = right ? -1 : 0;
+
+      if (left) idx = (idx - 1 + auton_names.size()) % auton_names.size();
+      else idx = (idx + 1) % auton_names.size();
+
+      brain_screen.select(idx);
     }
 
     pros::delay(ez::util::DELAY_TIME);
