@@ -42,7 +42,7 @@ constexpr double ARM_PIN4_HOVER_POS = 1900;
 
 //  claw roller: 2x 5.5W motors as one group (negative port = reversed).
 //  PLACEHOLDERS -- swap these for the real ports once it's wired.
-constexpr int ROLLER_RIGHT_PORT = -21;
+constexpr int ROLLER_RIGHT_PORT = -8;
 constexpr int ROLLER_LEFT_PORT  = 3;
 
 //  claw clamp, the robot's only pneumatic (ADI port 'A'-'H'). R1 opens it,
