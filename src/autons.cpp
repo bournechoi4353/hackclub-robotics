@@ -75,47 +75,47 @@ void redRightQuals() {
 
   chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-  arm.move_absolute(400, 100);
+  arm.move_absolute(400, 100);          // [1] arm: raise to 400
   chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
   chassis.pid_wait();
 
 
   chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-  arm.move_absolute(200, 100);
-  clawPiston.extend();
+  arm.move_absolute(200, 100);          // [2] arm: lower to 200
+  clawPiston.extend();                  //     claw: open
   chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(-38_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-  clawPiston.retract();
-  arm.move_absolute(800, 100);
+  clawPiston.retract();                 // [3] claw: close
+  arm.move_absolute(800, 100);          //     arm: raise to 800
   chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-  arm.move_absolute(400, 100);
+  arm.move_absolute(400, 100);          // [4] arm: lower to 400
   chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-  clawPiston.extend();
+  clawPiston.extend();                  // [5] claw: open
 
   chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-  clawPiston.retract();
+  clawPiston.retract();                 // [6] claw: close
   chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
   chassis.pid_wait();
-  arm.move_absolute(400, 100);
+  arm.move_absolute(400, 100);          // [7] arm: raise to 400
 
   chassis.pid_drive_set(-35_in, DRIVE_SPEED, true);
   chassis.pid_wait();  // full settle -- last move, nothing left to chain into
-  arm.move_absolute(300, 100);
-  clawPiston.extend();
+  arm.move_absolute(300, 100);          // [8] arm: lower to 300
+  clawPiston.extend();                  //     claw: open
 
 
 }
@@ -133,47 +133,47 @@ void redLeftQuals() {
 
   chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-  arm.move_absolute(400, 100);
+  arm.move_absolute(400, 100);          // [1] arm: raise to 400
   chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
   chassis.pid_wait();
 
 
   chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-  arm.move_absolute(200, 100);
-  clawPiston.extend();
+  arm.move_absolute(200, 100);          // [2] arm: lower to 200
+  clawPiston.extend();                  //     claw: open
   chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(-38_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-  clawPiston.retract();
-  arm.move_absolute(800, 100);
+  clawPiston.retract();                 // [3] claw: close
+  arm.move_absolute(800, 100);          //     arm: raise to 800
   chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-  arm.move_absolute(400, 100);
+  arm.move_absolute(400, 100);          // [4] arm: lower to 400
   chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-  clawPiston.extend();
+  clawPiston.extend();                  // [5] claw: open
 
   chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-  clawPiston.retract();
+  clawPiston.retract();                 // [6] claw: close
   chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
   chassis.pid_wait();
-  arm.move_absolute(400, 100);
+  arm.move_absolute(400, 100);          // [7] arm: raise to 400
 
   chassis.pid_drive_set(-35_in, DRIVE_SPEED, true);
   chassis.pid_wait();  // full settle -- last move, nothing left to chain into
-  arm.move_absolute(300, 100);
-  clawPiston.extend();
+  arm.move_absolute(300, 100);          // [8] arm: lower to 300
+  clawPiston.extend();                  //     claw: open
 }
 
 void redRightElim() {
@@ -323,50 +323,58 @@ void redLeftYellows(){
 //--------------------------------------------------------------------------------------
 void blueRightQuals() {
   //toggle
-  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
   chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
+  arm.move_absolute(400, 100);          // [1] arm: raise to 400
   chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
   chassis.pid_wait();
 
 
   chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
+  arm.move_absolute(200, 100);          // [2] arm: lower to 200
+  clawPiston.extend();                  //     claw: open
   chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(-38_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
+  clawPiston.retract();                 // [3] claw: close
+  arm.move_absolute(800, 100);          //     arm: raise to 800
   chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
+  arm.move_absolute(400, 100);          // [4] arm: lower to 400
   chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
+  clawPiston.extend();                  // [5] claw: open
 
   chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
   chassis.pid_wait();
+  clawPiston.retract();                 // [6] claw: close
   chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
   chassis.pid_wait();
+  arm.move_absolute(400, 100);          // [7] arm: raise to 400
+
   chassis.pid_drive_set(-35_in, DRIVE_SPEED, true);
   chassis.pid_wait();  // full settle -- last move, nothing left to chain into
+  arm.move_absolute(300, 100);          // [8] arm: lower to 300
+  clawPiston.extend();                  //     claw: open
 }
 
 void blueLeftQuals() {
@@ -382,39 +390,47 @@ void blueLeftQuals() {
 
   chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
+  arm.move_absolute(400, 100);          // [1] arm: raise to 400
   chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
   chassis.pid_wait();
 
 
   chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
+  arm.move_absolute(200, 100);          // [2] arm: lower to 200
+  clawPiston.extend();                  //     claw: open
   chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
   chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
   chassis.pid_wait();
   chassis.pid_drive_set(-38_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
+  clawPiston.retract();                 // [3] claw: close
+  arm.move_absolute(800, 100);          //     arm: raise to 800
   chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
-
+  arm.move_absolute(400, 100);          // [4] arm: lower to 400
   chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
   chassis.pid_wait();
+  clawPiston.extend();                  // [5] claw: open
 
   chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
   chassis.pid_wait();
+  clawPiston.retract();                 // [6] claw: close
   chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
   chassis.pid_wait();
+  arm.move_absolute(400, 100);          // [7] arm: raise to 400
+
   chassis.pid_drive_set(-35_in, DRIVE_SPEED, true);
   chassis.pid_wait();  // full settle -- last move, nothing left to chain into
+  arm.move_absolute(300, 100);          // [8] arm: lower to 300
+  clawPiston.extend();                  //     claw: open
 }
 
 void blueRightElim() {

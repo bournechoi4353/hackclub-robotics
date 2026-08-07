@@ -6,15 +6,9 @@
 //  backward.
 #define LEFT_DRIVE_PORTS  {-18, 19, -20}    // physically front-right/mid-right/back-right
 #define RIGHT_DRIVE_PORTS {12, -11, 5}  // physically front-left/mid-left/back-left
-constexpr int    IMU_PORT       = 4;   // gyro
+constexpr int    IMU_PORT       = 13;   // gyro
 constexpr double WHEEL_DIAMETER = 2.75;
 constexpr double DRIVE_RPM      = 450;
-
-//  tracking wheel -- horizontal only, no vertical tracker on this bot.
-//  diameter/offset are the wheel's own geometry, unrelated to the port.
-constexpr int    HORIZ_TRACKER_PORT     = 21;   // odom rotation sens
-constexpr double HORIZ_TRACKER_DIAMETER = 3.25;
-constexpr double HORIZ_TRACKER_OFFSET   = -7.61;
 
 //  lift: single motor
 constexpr int LIFT_PORT = -7;

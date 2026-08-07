@@ -12,8 +12,6 @@ ez::Drive chassis(
     WHEEL_DIAMETER,
     DRIVE_RPM);
 
-ez::tracking_wheel horiz_tracker(HORIZ_TRACKER_PORT, HORIZ_TRACKER_DIAMETER, HORIZ_TRACKER_OFFSET);
-
 // LEFT/RIGHT on the controller cycle ONLY the real match autons (the other
 // entries in autons_add() are test/debug tools, not used in competition).
 // must be the first N entries of autons_add(), in the same order.
@@ -38,11 +36,9 @@ void initialize() {
 
   pros::delay(500);  // let the ports configure before anything runs
 
-  // horizontal tracker only -- no vertical/parallel tracker on this bot, so
-  // forward distance still comes from the drive motor encoders. this one wheel
-  // corrects strafe/turning drift; pid_drive_set/pid_turn_set already work off
-  // the IMU + encoders either way.
-  chassis.odom_tracker_back_set(&horiz_tracker);
+  // no tracking wheels on this bot -- forward distance comes from the drive
+  // motor encoders, heading from the IMU. pid_drive_set/pid_turn_set work off
+  // those either way.
 
   chassis.opcontrol_curve_buttons_toggle(true);   // adjust curve with the joystick buttons
   chassis.opcontrol_drive_activebrake_set(0.0);   // 0 = off, EZ recommends ~2
@@ -182,6 +178,7 @@ pros::Task ezScreenTask(ez_screen_task);
 void ez_template_extras() {
   if (!pros::competition::is_connected()) {
     if (master.get_digital(DIGITAL_B) && master.get_digital(DIGITAL_DOWN)) {
+      master.rumble(".");  // TEMP: confirms the combo was actually detected
       pros::motor_brake_mode_e_t preference = chassis.drive_brake_get();
       autonomous();
       chassis.drive_brake_set(preference);
