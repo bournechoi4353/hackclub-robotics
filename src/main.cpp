@@ -49,6 +49,7 @@ void initialize() {
   // arm holds its position when no button is pressed instead of coasting down
   arm.set_brake_mode(pros::MotorBrake::hold);
   arm.tare_position();  // zero the arm encoder
+  arm_sensor.reset_position();  // zero the arm hard-stop reference -- wherever the arm rests at boot = 0
 
   // auton selector (brain screen). first entry = default
   ez::as::auton_selector.autons_add({

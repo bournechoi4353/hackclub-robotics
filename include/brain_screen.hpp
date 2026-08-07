@@ -55,6 +55,13 @@ class BrainScreen {
   int selected_index() const { return selected_index_; }
   std::string selected_name() const;
 
+  // shows text in place of the field-map panel -- for test autons (like
+  // arm_height_capture) that need to print live values somewhere visible.
+  // safe to call from any task; the actual LVGL update happens in the anim
+  // timer. hide_text() (or selecting a different auton) restores the map.
+  void show_text(const std::string& text);
+  void hide_text();
+
  private:
   // Only these run LVGL calls, and only from the anim timer (LVGL's own
   // context) -- select()/next()/prev()/row clicks just flag dirty_.
@@ -82,7 +89,13 @@ class BrainScreen {
   lv_obj_t* route_ = nullptr;   // faint polyline of the whole path
   lv_obj_t* robot_ = nullptr;   // the moving square
   lv_obj_t* nose_ = nullptr;    // heading dot on the square (shows turns)
+  lv_obj_t* map_text_ = nullptr;  // covers the field panel to show show_text()
   std::vector<lv_obj_t*> rows_;
+
+  // set from any task via show_text()/hide_text(); applied to map_text_ by
+  // the anim timer.
+  std::string pending_text_;
+  bool text_mode_ = false;
 
   // animation state
   std::vector<lv_point_t> anim_pts_;   // dense screen points the square walks

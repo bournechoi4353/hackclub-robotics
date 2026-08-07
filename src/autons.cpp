@@ -1,4 +1,5 @@
 #include "main.h"
+#include "brain_screen.hpp"
 
 // built on EZ-Template, docs at https://ez-robotics.github.io/EZ-Template/
 
@@ -677,7 +678,7 @@ void skills() {
 // built-in smooth move, no PID tuning. edit the ARM_*_POS numbers in ports.hpp
 // once you've captured your real heights.
 void arm_height_test() {
-  arm.tare_position();  // 0 = wherever the arm is resting right now
+  arm_sensor.reset_position();  // 0 = wherever the arm is resting right now
 
   const int ARM_VEL = 100;  // move speed in deg/sec (green cartridge tops out ~200)
   double heights[] = {ARM_PIN1_PLACE_POS, ARM_PIN1_HOVER_POS,
@@ -690,10 +691,11 @@ void arm_height_test() {
     arm.move_absolute(h, ARM_VEL);
     pros::delay(1500);  // let it get there and settle before reading
 
-    printf("Arm -> target %.0f   actual %.1f\n", h, arm.get_position());
+    double actual = arm_sensor.get_position() / 100.0;
+    printf("Arm -> target %.0f   actual %.1f\n", h, actual);
     ez::screen_print("Arm height test"
                          "\ntarget: " + util::to_string_with_precision(h) +
-                         "\nactual: " + util::to_string_with_precision(arm.get_position()),
+                         "\nactual: " + util::to_string_with_precision(actual),
                      1);
   }
 }
@@ -705,7 +707,7 @@ void arm_height_test() {
 // too if you'd rather jog it than push it. no auto-stepping, runs forever;
 // pick a different auton (or restart) to exit.
 void arm_height_capture() {
-  arm.tare_position();  // 0 = resting position (0 pins)
+  arm_sensor.reset_position();  // 0 = resting position (0 pins)
   arm.set_brake_mode(pros::MotorBrake::coast);  // free to push by hand
 
   while (true) {
@@ -717,12 +719,12 @@ void arm_height_capture() {
       set_arm(0);
     }
 
-    printf("Arm height capture -> position: %.1f\n", arm.get_position());
-    ez::screen_print("Arm height capture"
-                         "\nposition: " + util::to_string_with_precision(arm.get_position()) +
-                         "\n(push by hand, or R2 up / L2 down, 0 = rest)"
-                         "\nmove to each pin height, write down the number",
-                     1);
+    double position = arm_sensor.get_position() / 100.0;
+    printf("Arm height capture -> position: %.1f\n", position);
+    brain_screen.show_text("Arm height capture"
+                                "\nposition: " + util::to_string_with_precision(position) +
+                                "\n(push by hand, or R2 up / L2 down, 0 = rest)"
+                                "\nmove to each pin height, write down the number");
 
     pros::delay(ez::util::DELAY_TIME);
   }

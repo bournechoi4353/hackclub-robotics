@@ -14,6 +14,14 @@ constexpr double DRIVE_RPM      = 450;
 constexpr int LIFT_PORT = -7;
 constexpr int LIFT2_PORT = 9;
 
+//  arm rotation sensor (absolute position feedback for the lift)
+constexpr int ARM_SENSOR_PORT = 10;
+
+//  arm travel limits, in rotation-sensor degrees. hard stop -- the arm is
+//  never allowed outside this range, driving or auton.
+constexpr double ARM_SENSOR_LOWER_LIMIT = 0;
+constexpr double ARM_SENSOR_UPPER_LIMIT = 94;
+
 
 //  arm/lift height presets (motor-encoder degrees), captured via "Arm Height
 //  Capture". PLACE = height to actually set the pin down, HOVER = a bit

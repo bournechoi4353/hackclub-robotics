@@ -163,6 +163,16 @@ void BrainScreen::init(const std::vector<AutonItem>& autons) {
   lv_obj_set_style_radius(nose_, 3, LV_PART_MAIN);
   lv_obj_clear_flag(nose_, LV_OBJ_FLAG_SCROLLABLE);
 
+  // ---- text overlay for show_text() -- covers the field panel, hidden by default ----
+  map_text_ = lv_label_create(screen_);
+  lv_obj_add_style(map_text_, &style_panel, LV_PART_MAIN);
+  lv_obj_set_style_bg_opa(map_text_, LV_OPA_COVER, LV_PART_MAIN);
+  lv_obj_set_style_pad_all(map_text_, 6, LV_PART_MAIN);
+  lv_obj_set_size(map_text_, FIELD_PX, FIELD_PX);
+  lv_obj_set_pos(map_text_, FIELD_X, FIELD_Y);
+  lv_label_set_long_mode(map_text_, LV_LABEL_LONG_WRAP);
+  lv_obj_add_flag(map_text_, LV_OBJ_FLAG_HIDDEN);
+
   lv_timer_create(battery_timer, 2000, NULL);
   lv_timer_create(anim_timer, 40, NULL);  // ~25 fps
 
@@ -300,6 +310,17 @@ void BrainScreen::select(int index) {
   if (index < 0) index = 0;
   if (index >= (int)autons_.size()) index = autons_.size() - 1;
   selected_index_ = index;
+  text_mode_ = false;  // picking a new auton always goes back to the map view
+  dirty_ = true;
+}
+
+void BrainScreen::show_text(const std::string& text) {
+  pending_text_ = text;
+  text_mode_ = true;
+}
+
+void BrainScreen::hide_text() {
+  text_mode_ = false;
   dirty_ = true;
 }
 
@@ -332,6 +353,15 @@ void BrainScreen::battery_timer(lv_timer_t* t) {
 }
 
 void BrainScreen::anim_timer(lv_timer_t* t) {
+  if (brain_screen.text_mode_) {
+    lv_label_set_text(brain_screen.map_text_, brain_screen.pending_text_.c_str());
+    lv_obj_clear_flag(brain_screen.map_text_, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(brain_screen.field_, LV_OBJ_FLAG_HIDDEN);
+    return;
+  }
+  lv_obj_add_flag(brain_screen.map_text_, LV_OBJ_FLAG_HIDDEN);
+  lv_obj_clear_flag(brain_screen.field_, LV_OBJ_FLAG_HIDDEN);
+
   if (brain_screen.dirty_) {
     brain_screen.apply_selection();
     brain_screen.dirty_ = false;
