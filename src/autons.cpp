@@ -5,7 +5,7 @@
 
 // all out of 127
 const int DRIVE_SPEED = 127;
-const int TURN_SPEED = 110;
+const int TURN_SPEED = 90;
 const int SWING_SPEED = 127;
 
 // milliseconds to wait between auton movements. change this one number; 0 = none
@@ -15,8 +15,8 @@ const int PAUSE = 0;
 void default_constants() {
   // kP, kI, kD (turn also takes a start-I)
   chassis.pid_drive_constants_set(12.0, 0.0, 80.0);          // fwd/rev, lower kP eases into the target instead of braking hard
-  chassis.pid_heading_constants_set(11.0, 0.0, 20.0);        // keeps us driving straight without odom
-  chassis.pid_turn_constants_set(3.0, 0.05, 20.0, 15.0);     // turning in place
+  chassis.pid_heading_constants_set(6.0, 0.0, 20.0);
+  chassis.pid_turn_constants_set(3.0, 0.05, 20.0, 15.0);
   chassis.pid_swing_constants_set(6.0, 0.0, 65.0);           // swings, one side pivots
   chassis.pid_odom_angular_constants_set(4.0, 0.0, 52.5);    // heading for odom moves, lowered kP to kill the side-to-side sway
   chassis.pid_odom_boomerang_constants_set(5.8, 0.0, 32.5);  // heading for boomerang moves
@@ -47,657 +47,220 @@ void default_constants() {
   chassis.pid_angle_behavior_set(ez::shortest);  // default turns take the shortest way around
 }
 
-// open-loop push into a wall so the wall (not a PID target) squares the robot
-// up. a closed-loop swing fights to reach a commanded angle even after it's
-// pinned against the wall -- this just pushes for a fixed time and stops, no
-// target to fight over. direction is a guess (matching the RIGHT_SWING this
-// replaces) -- flip which side gets power if it swings the wrong way.
-void swing_into_wall(int left_power, int right_power, int duration_ms) {
-  uint32_t start = pros::millis();
-  while (pros::millis() - start < (uint32_t)duration_ms) {
-    chassis.drive_set(left_power, right_power);
-    pros::delay(ez::util::DELAY_TIME);
-  }
-  chassis.drive_set(0, 0);
+void redLeft() {
+  chassis.pid_drive_set(-4_in, 127, false);
+  chassis.pid_wait();
+  chassis.pid_drive_set(6_in, 127, false);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-5_in, 127, false);
+  chassis.pid_wait();
+  chassis.pid_drive_set(7_in, 127, false);
+  chassis.pid_wait();
+
+  arm.move_absolute(200, 100);
+  chassis.pid_drive_set(-18_in, 127, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(90_deg, 120);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, 60, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(1.5_in, 60, true);
+  chassis.pid_wait();
+
+  set_arm(-40);
+  pros::delay(800);
+  clawPiston.extend();
+  pros::delay(700);
+  set_arm(0);
+
+
+  chassis.pid_drive_set(20_in, 90, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-44_deg, 120);
+  chassis.pid_wait();
+  arm.move_absolute(-20, 100);
+  chassis.pid_drive_set(-30_in, 65, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-3.5_in, 30, true);
+  chassis.pid_wait();
+
+  clawPiston.retract();
+  arm.move_absolute(700, 100);
+  pros::delay(700);
+
+  chassis.pid_turn_relative_set(123_deg, 100);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-14.5_in, 50, true);
+  chassis.pid_wait();
+  arm.move_absolute(305, 100);
+  pros::delay(800);
+  clawPiston.extend();
+  chassis.pid_drive_set(5_in, 127, true);
+  chassis.pid_wait();
 }
 
-// 2red1black match auton -- EZ's IMU-based PID drive + turns (IMU on port 9).
-void redRightQuals() {
-  //toggle
-  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+void redRight() {
+  chassis.pid_drive_set(-4_in, 127, false);
   chassis.pid_wait();
-  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(6_in, 127, false);
   chassis.pid_wait();
-  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(-5_in, 127, false);
   chassis.pid_wait();
-  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(7_in, 127, false);
   chassis.pid_wait();
 
-
-  chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
+  arm.move_absolute(200, 100);
+  chassis.pid_drive_set(-18_in, 127, true);
   chassis.pid_wait();
-  arm.move_absolute(400, 100);          // [1] arm: raise to 400
-  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
+  chassis.pid_turn_relative_set(-90_deg, 120);
   chassis.pid_wait();
-
-
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(-19_in, 60, true);
   chassis.pid_wait();
-  arm.move_absolute(200, 100);          // [2] arm: lower to 200
-  clawPiston.extend();                  //     claw: open
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-38_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  clawPiston.retract();                 // [3] claw: close
-  arm.move_absolute(800, 100);          //     arm: raise to 800
-  chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
+  chassis.pid_drive_set(1.5_in, 60, true);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  arm.move_absolute(400, 100);          // [4] arm: lower to 400
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  clawPiston.extend();                  // [5] claw: open
+  set_arm(-40);
+  pros::delay(800);
+  clawPiston.extend();
+  pros::delay(700);
+  set_arm(0);
 
-  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
+
+  chassis.pid_drive_set(20_in, 90, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(44_deg, 120);
+  chassis.pid_wait();
+  arm.move_absolute(-20, 100);
+  chassis.pid_drive_set(-30_in, 65, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-3.5_in, 30, true);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  clawPiston.retract();                 // [6] claw: close
-  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
-  chassis.pid_wait();
-  arm.move_absolute(400, 100);          // [7] arm: raise to 400
+  clawPiston.retract();
+  arm.move_absolute(700, 100);
+  pros::delay(700);
 
-  chassis.pid_drive_set(-35_in, DRIVE_SPEED, true);
-  chassis.pid_wait();  // full settle -- last move, nothing left to chain into
-  arm.move_absolute(300, 100);          // [8] arm: lower to 300
-  clawPiston.extend();                  //     claw: open
+  chassis.pid_turn_relative_set(-123_deg, 100);
+  chassis.pid_wait();
 
+  chassis.pid_drive_set(-14.5_in, 50, true);
+  chassis.pid_wait();
+  arm.move_absolute(305, 100);
+  pros::delay(800);
+  clawPiston.extend();
+  chassis.pid_drive_set(5_in, 127, true);
+  chassis.pid_wait();
 
 }
 
-void redLeftQuals() {
-  //toggle
-  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+void blueLeft() {
+  chassis.pid_drive_set(-4_in, 127, false);
   chassis.pid_wait();
-  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(6_in, 127, false);
   chassis.pid_wait();
-  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(-5_in, 127, false);
   chassis.pid_wait();
-  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  arm.move_absolute(400, 100);          // [1] arm: raise to 400
-  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
+  chassis.pid_drive_set(7_in, 127, false);
   chassis.pid_wait();
 
-
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  arm.move_absolute(200, 100);
+  chassis.pid_drive_set(-18_in, 127, true);
   chassis.pid_wait();
-  arm.move_absolute(200, 100);          // [2] arm: lower to 200
-  clawPiston.extend();                  //     claw: open
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  chassis.pid_turn_relative_set(90_deg, 120);
   chassis.pid_wait();
-  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
+  chassis.pid_drive_set(-19_in, 60, true);
   chassis.pid_wait();
-  chassis.pid_drive_set(-38_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  clawPiston.retract();                 // [3] claw: close
-  arm.move_absolute(800, 100);          //     arm: raise to 800
-  chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
+  chassis.pid_drive_set(1.5_in, 60, true);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  arm.move_absolute(400, 100);          // [4] arm: lower to 400
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  clawPiston.extend();                  // [5] claw: open
-
-  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  clawPiston.retract();                 // [6] claw: close
-  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
-  chassis.pid_wait();
-  arm.move_absolute(400, 100);          // [7] arm: raise to 400
-
-  chassis.pid_drive_set(-35_in, DRIVE_SPEED, true);
-  chassis.pid_wait();  // full settle -- last move, nothing left to chain into
-  arm.move_absolute(300, 100);          // [8] arm: lower to 300
-  clawPiston.extend();                  //     claw: open
-}
-
-void redRightElim() {
-
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
-  chassis.pid_wait();
+  set_arm(-40);
+  pros::delay(800);
+  clawPiston.extend();
+  pros::delay(700);
+  set_arm(0);
 
 
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(20_in, 90, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(-44_deg, 120);
+  chassis.pid_wait();
+  arm.move_absolute(-20, 100);
+  chassis.pid_drive_set(-30_in, 65, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-3.5_in, 30, true);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
+  clawPiston.retract();
+  arm.move_absolute(700, 100);
+  pros::delay(700);
+
+  chassis.pid_turn_relative_set(123_deg, 100);
   chassis.pid_wait();
 
-  chassis.pid_drive_set(-45_in, 80, true);
+  chassis.pid_drive_set(-14.5_in, 50, true);
   chassis.pid_wait();
-  chassis.pid_drive_set(-27_in,90, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(27_in, 100, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(45_in, 80, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(-135_deg, 90);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-27_in, 80, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(27_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-45_in, 80, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  arm.move_absolute(305, 100);
+  pros::delay(800);
+  clawPiston.extend();
+  chassis.pid_drive_set(5_in, 127, true);
   chassis.pid_wait();
 
 
 }
 
-void redLeftElim() {
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+void blueRight() {
+  chassis.pid_drive_set(-4_in, 127, false);
   chassis.pid_wait();
-
-  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(45_in, 80, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-27_in,90, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(27_in, 100, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-45_in, 80, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(135_deg, 90);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-27_in, 80, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(27_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(45_in, 80, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-
-}
-
-void redRightYellows(){
-  chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-34_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-34_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-}
-
-void redLeftYellows(){
-  chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-34_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-34_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-}
-//--------------------------------------------------------------------------------------
-void blueRightQuals() {
-  //toggle
-  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  arm.move_absolute(400, 100);          // [1] arm: raise to 400
-  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  arm.move_absolute(200, 100);          // [2] arm: lower to 200
-  clawPiston.extend();                  //     claw: open
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-38_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  clawPiston.retract();                 // [3] claw: close
-  arm.move_absolute(800, 100);          //     arm: raise to 800
-  chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  arm.move_absolute(400, 100);          // [4] arm: lower to 400
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  clawPiston.extend();                  // [5] claw: open
-
-  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  clawPiston.retract();                 // [6] claw: close
-  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
-  chassis.pid_wait();
-  arm.move_absolute(400, 100);          // [7] arm: raise to 400
-
-  chassis.pid_drive_set(-35_in, DRIVE_SPEED, true);
-  chassis.pid_wait();  // full settle -- last move, nothing left to chain into
-  arm.move_absolute(300, 100);          // [8] arm: lower to 300
-  clawPiston.extend();                  //     claw: open
-}
-
-void blueLeftQuals() {
-  //toggle
-  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(-17_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  arm.move_absolute(400, 100);          // [1] arm: raise to 400
-  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  arm.move_absolute(200, 100);          // [2] arm: lower to 200
-  clawPiston.extend();                  //     claw: open
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-38_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  clawPiston.retract();                 // [3] claw: close
-  arm.move_absolute(800, 100);          //     arm: raise to 800
-  chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  arm.move_absolute(400, 100);          // [4] arm: lower to 400
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  clawPiston.extend();                  // [5] claw: open
-
-  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(-26_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(6_in, 127, false);
   chassis.pid_wait();
-  clawPiston.retract();                 // [6] claw: close
-  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
+  chassis.pid_drive_set(-5_in, 127, false);
   chassis.pid_wait();
-  arm.move_absolute(400, 100);          // [7] arm: raise to 400
-
-  chassis.pid_drive_set(-35_in, DRIVE_SPEED, true);
-  chassis.pid_wait();  // full settle -- last move, nothing left to chain into
-  arm.move_absolute(300, 100);          // [8] arm: lower to 300
-  clawPiston.extend();                  //     claw: open
-}
-
-void blueRightElim() {
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(-45_in, 80, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-27_in,90, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(27_in, 100, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(45_in, 80, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(-135_deg, 90);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-27_in, 80, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(27_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-45_in, 80, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-
-}
-
-void blueLeftElim() {
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
-  chassis.pid_wait();
-
-
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(45_in, 80, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-27_in,90, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(27_in, 100, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-45_in, 80, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(135_deg, 90);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-27_in, 80, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(27_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(45_in, 80, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-
-}
-
-void blueRightYellows(){
-  chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_turn_relative_set(-90_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-34_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(45_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-34_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(-135_deg, TURN_SPEED);
+  chassis.pid_drive_set(7_in, 127, false);
   chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-}
-
-void blueLeftYellows(){
-  chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-
-  chassis.pid_turn_relative_set(90_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
 
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-34_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
-  chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_drive_set(19_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  chassis.pid_turn_relative_set(-45_deg, TURN_SPEED);
+  arm.move_absolute(200, 100);
+  chassis.pid_drive_set(-18_in, 127, true);
   chassis.pid_wait();
-  chassis.pid_drive_set(-34_in, DRIVE_SPEED, true);
+  chassis.pid_turn_relative_set(-90_deg, 120);
   chassis.pid_wait();
-  chassis.pid_turn_relative_set(135_deg, TURN_SPEED);
+  chassis.pid_drive_set(-19_in, 60, true);
   chassis.pid_wait();
-  chassis.pid_drive_set(-19_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(1.5_in, 60, true);
   chassis.pid_wait();
 
-}
+  set_arm(-40);
+  pros::delay(800);
+  clawPiston.extend();
+  pros::delay(700);
+  set_arm(0);
 
-void skills() {
-  // real starting spot on the field: (0, -67), facing center (+Y) = 0 deg
-  chassis.odom_xyt_set(0_in, -67_in, 0_deg);
 
-  // --- shuttle-loop tuning (PLACEHOLDERS -- capture these on the field) ---
-  // front-sensor distance (mm) at the end of each goal approach. drive the
-  // segment once, read distanceFront.get() where it should stop, and drop the
-  // real number in. the field-tested encoder distances these replace are noted
-  // in comments on each drive_to_distance call below.
-  const int GOAL1_MM   = 60;   // was pid_drive_set(18_in)
-  const int GOAL2_MM   = 60;   // was pid_drive_set(13_in)
-  const int SQUARE_TOL = 20;   // left/right match tolerance (mm) for square_to_walls
-
-  chassis.pid_drive_set(-5_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(20_in, 90, true);
   chassis.pid_wait();
-
-  chassis.pid_drive_set(8_in, DRIVE_SPEED, true);
+  chassis.pid_turn_relative_set(44_deg, 120);
   chassis.pid_wait();
-
-  chassis.pid_turn_set(90_deg, TURN_SPEED);
+  arm.move_absolute(-20, 100);
+  chassis.pid_drive_set(-30_in, 65, true);
   chassis.pid_wait();
-
-  chassis.pid_drive_set(60_in, DRIVE_SPEED, true);
+  chassis.pid_drive_set(-3.5_in, 30, true);
   chassis.pid_wait();
-
-  for (int i = 0; i < 5; i++) {
-    // re-square at the START of every rep so heading error can't compound
-    // across reps. bounded + gated: self-aborts if the side sensors aren't on
-    // walls, so it never fights the IMU mid-field.
-    square_to_walls(SQUARE_TOL);
-
-    chassis.pid_wait_until(3000);
-    chassis.pid_drive_set(-13_in, DRIVE_SPEED, true);
-    chassis.pid_wait();
 
-    chassis.pid_turn_set(-60_deg, TURN_SPEED);
-    chassis.pid_wait();
+  clawPiston.retract();
+  arm.move_absolute(700, 100);
+  pros::delay(700);
 
-    // distance sensor is DISABLED for now -- back to the fixed distance this
-    // replaced. drive_to_distance(distanceFront, GOAL1_MM, DRIVE_SPEED);
-    chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
-    chassis.pid_wait();
-
-    chassis.pid_wait_until(3000);
-
-    chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
-    chassis.pid_wait();
-
-    chassis.pid_turn_set(90_deg, TURN_SPEED);
-    chassis.pid_wait();
-
-    // drive_to_distance(distanceFront, GOAL2_MM, DRIVE_SPEED);  // was 13"
-    chassis.pid_drive_set(-13_in, DRIVE_SPEED, true);
-    chassis.pid_wait();
-  }
-  chassis.pid_drive_set(-60_in, DRIVE_SPEED, true);
+  chassis.pid_turn_relative_set(-123_deg, 100);
   chassis.pid_wait();
 
-  chassis.pid_turn_relative_set(180_deg, TURN_SPEED);
+  chassis.pid_drive_set(-14.5_in, 50, true);
   chassis.pid_wait();
-
-  chassis.pid_drive_set(60_in, DRIVE_SPEED, true);
+  arm.move_absolute(305, 100);
+  pros::delay(800);
+  clawPiston.extend();
+  chassis.pid_drive_set(5_in, 127, true);
   chassis.pid_wait();
-
-  for (int i = 0; i < 5; i++) {
-    square_to_walls(SQUARE_TOL);
-
-    chassis.pid_wait_until(3000);
-    chassis.pid_drive_set(-13_in, DRIVE_SPEED, true);
-    chassis.pid_wait();
-
-    chassis.pid_turn_set(60_deg, TURN_SPEED);   // 90 - 150
-    chassis.pid_wait();
-
-    // drive_to_distance(distanceFront, GOAL1_MM, DRIVE_SPEED);  // was 18"
-    chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
-    chassis.pid_wait();
-
-    chassis.pid_wait_until(3000);
-
-    chassis.pid_drive_set(-18_in, DRIVE_SPEED, true);
-    chassis.pid_wait();
-
-    chassis.pid_turn_set(-90_deg, TURN_SPEED);    // back to 90
-    chassis.pid_wait();
-
-    // drive_to_distance(distanceFront, GOAL2_MM, DRIVE_SPEED);  // was 13"
-    chassis.pid_drive_set(-13_in, DRIVE_SPEED, true);
-    chassis.pid_wait();
-  }
-}
-
-
-
-
-// cycles the arm through each preset height, pausing at each so you can line it
-// up against the tower and read the encoder. uses move_absolute, the motor's
-// built-in smooth move, no PID tuning. edit the ARM_*_POS numbers in ports.hpp
-// once you've captured your real heights.
-void arm_height_test() {
-  arm_sensor.reset_position();  // 0 = wherever the arm is resting right now
-
-  const int ARM_VEL = 100;  // move speed in deg/sec (green cartridge tops out ~200)
-  double heights[] = {ARM_PIN1_PLACE_POS, ARM_PIN1_HOVER_POS,
-                       ARM_PIN2_PLACE_POS, ARM_PIN2_HOVER_POS,
-                       ARM_PIN3_PLACE_POS, ARM_PIN3_HOVER_POS,
-                       ARM_PIN4_PLACE_POS, ARM_PIN4_HOVER_POS,
-                       ARM_REST_POS};
-
-  for (double h : heights) {
-    arm.move_absolute(h, ARM_VEL);
-    pros::delay(1500);  // let it get there and settle before reading
 
-    double actual = arm_sensor.get_position() / 100.0;
-    printf("Arm -> target %.0f   actual %.1f\n", h, actual);
-    ez::screen_print("Arm height test"
-                         "\ntarget: " + util::to_string_with_precision(h) +
-                         "\nactual: " + util::to_string_with_precision(actual),
-                     1);
-  }
 }
 
 // live capture tool for pin heights. tares at 0 (resting position), sets the
@@ -728,132 +291,4 @@ void arm_height_capture() {
 
     pros::delay(ez::util::DELAY_TIME);
   }
-}
-
-// pivot in place under motor power and report how far x/y drifted (should
-// be ~0). don't spin it by hand, your hands slide the robot and fake a
-// drift. small drift = nudge the horiz offset, big runaway = wrong sign.
-void odom_spin_test() {
-  chassis.odom_xyt_set(0_in, 0_in, 0_deg);
-  chassis.drive_brake_set(MOTOR_BRAKE_COAST);
-
-  chassis.drive_set(45, -45);   // left fwd, right rev = pivot
-  pros::delay(4000);            // a few rotations
-  chassis.drive_set(0, 0);
-  pros::delay(400);
-
-  double x = chassis.odom_x_get();
-  double y = chassis.odom_y_get();
-  double t = chassis.odom_theta_get();
-  printf("Spin drift -> x: %.2f  y: %.2f  t: %.2f  (x/y should be ~0)\n", x, y, t);
-  while (true) {
-    ez::screen_print("After in-place pivot (x/y should be ~0):"
-                         "\n x: " + util::to_string_with_precision(x) +
-                         "\n y: " + util::to_string_with_precision(y) +
-                         "\n t: " + util::to_string_with_precision(t),
-                     1);
-    pros::delay(ez::util::DELAY_TIME);
-  }
-}
-
-// add your own autons below
-
-
-// 48" square for tuning drive + turn PID, four straights with 90 turns, no
-// tracking wheels needed (IMU + encoders). watch how cleanly it closes back to
-// the start: sides bowing = drive PID, corners off = turn PID.
-void pid_square() {
-  for (int i = 0; i < 4; i++) {
-    chassis.pid_drive_set(48_in, DRIVE_SPEED, true);
-    chassis.pid_wait();
-
-    chassis.pid_turn_relative_set(90_deg, TURN_SPEED);  // 90 right; 4 corners = full loop
-    chassis.pid_wait();
-  }
-}
-
-// straight 48" with the trapezoid profile instead of PID, then prints how
-// far it actually went. tune kV/kA/kP in motion_profile.cpp
-void motion_profile_test() {
-  // profiled_drive(inches, max vel in/s, max accel in/s^2)
-  profiled_drive(48, 30, 60);
-
-  double traveled = (chassis.drive_sensor_left() + chassis.drive_sensor_right()) / 2.0;
-  printf("Motion profile -> target: 48.0 in   traveled: %f in\n", traveled);
-}
-
-// square the robot up against a real wall before running this. seeds a
-// deliberately wrong pose (so there's something to fix), then wall_reset()
-// should snap it back -- prints before/after so you can see it move.
-void wall_reset_test() {
-  chassis.odom_xyt_set(0.0, 0.0, chassis.odom_theta_get());  // wrong x/y on purpose
-  printf("Wall reset -- BEFORE: x:%.2f y:%.2f t:%.2f\n",
-         chassis.odom_x_get(), chassis.odom_y_get(), chassis.odom_theta_get());
-
-  bool applied = wall_reset();
-
-  printf("Wall reset -- AFTER:  x:%.2f y:%.2f t:%.2f  (%s)\n",
-         chassis.odom_x_get(), chassis.odom_y_get(), chassis.odom_theta_get(),
-         applied ? "applied" : "no sensor was square to a wall in range");
-}
-
-// MCL end-to-end test. place the robot at field (-48, -48) facing forward,
-// bottom-left corner: back wall ~22" behind center, left wall ~22" to the
-// left, so both sensors are in range (back fixes Y, left fixes X, right
-// sees nothing).
-//
-// we seed odom 4" off in X on purpose. watch the screen: pending X walks
-// toward -4 as the cloud converges, then the flush snaps odom to the truth.
-// after that it drives out and back, flushing only between motions.
-void mcl_test() {
-  constexpr double START_X = -48.0, START_Y = -48.0;  // true placement
-  constexpr double ODOM_ERR_X = 4.0;                  // the planted error
-
-  // lie to odom by 4". MCL gets seeded at the same wrong spot (that's all it
-  // would know in a real match) and has to find the truth from the walls
-  chassis.odom_xyt_set(START_X + ODOM_ERR_X, START_Y, 0.0);
-  mcl::start(START_X + ODOM_ERR_X, START_Y, 3.0);
-  mcl::auto_flush_set(false);  // manual flushes so each phase is visible
-
-  // sit still, let the cloud converge
-  pros::delay(4000);
-
-  // flush, odom X should jump ~-4"
-  bool applied = mcl::flush_if_safe();
-  printf("[mcl_test] flush #1 %s | odom (%.1f, %.1f) vs true (%.1f, %.1f)\n",
-         applied ? "APPLIED" : "skipped",
-         chassis.odom_x_get(), chassis.odom_y_get(), START_X, START_Y);
-  pros::delay(1000);
-
-  // drive out and back, flushing only between motions
-  chassis.pid_drive_set(24_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  mcl::flush_if_safe();
-
-  chassis.pid_drive_set(-24_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
-  mcl::flush_if_safe();
-
-  // park with live numbers, stop the program after reading
-  while (true) {
-    ez::screen_print("MCL  odom(" + util::to_string_with_precision(chassis.odom_x_get()) +
-                         ", " + util::to_string_with_precision(chassis.odom_y_get()) + ")" +
-                         "\nest (" + util::to_string_with_precision(mcl::x()) +
-                         ", " + util::to_string_with_precision(mcl::y()) + ")" +
-                         "\npend(" + util::to_string_with_precision(mcl::pending_x()) +
-                         ", " + util::to_string_with_precision(mcl::pending_y()) + ")" +
-                         "\nsprd(" + util::to_string_with_precision(mcl::spread_x()) +
-                         ", " + util::to_string_with_precision(mcl::spread_y()) + ")" +
-                         " conf " + (mcl::confident_x() ? "X" : "-") + (mcl::confident_y() ? "Y" : "-") +
-                         "\nbeams ok " + std::to_string(mcl::sensors_accepted()) +
-                         " gated " + std::to_string(mcl::sensors_gated()) +
-                         " flushes " + std::to_string(mcl::flush_count()),
-                     1);
-    pros::delay(ez::util::DELAY_TIME);
-  }
-}
-
-void toggle_test() {
-  chassis.pid_drive_set(3_in, DRIVE_SPEED, true);
-  chassis.pid_wait();
 }

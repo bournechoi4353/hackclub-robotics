@@ -19,8 +19,11 @@ constexpr int ARM_SENSOR_PORT = 10;
 
 //  arm travel limits, in rotation-sensor degrees. hard stop -- the arm is
 //  never allowed outside this range, driving or auton.
-constexpr double ARM_SENSOR_LOWER_LIMIT = 0;
+constexpr double ARM_SENSOR_LOWER_LIMIT = -20;
 constexpr double ARM_SENSOR_UPPER_LIMIT = 94;
+
+constexpr double ARM_SPEED_LIMIT_THRESHOLD = 45;
+constexpr int ARM_SPEED_LIMIT = 90;
 
 
 //  arm/lift height presets (motor-encoder degrees), captured via "Arm Height

@@ -16,18 +16,10 @@ ez::Drive chassis(
 // entries in autons_add() are test/debug tools, not used in competition).
 // must be the first N entries of autons_add(), in the same order.
 std::vector<std::string> auton_names = {
-    "redRightQuals",
-    "redLeftQuals",
-    "redRightElim",
-    "redLeftElim",
-    "redRightYellows",
-    "redLeftYellows",
-    "blueRightQuals",
-    "blueLeftQuals",
-    "blueRightElim",
-    "blueLeftElim",
-    "blueRightYellows",
-    "blueLeftYellows",
+    "redLeft",
+    "redRight",
+    "blueLeft",
+    "blueRight",
 };
 
 // runs as soon as the program starts
@@ -53,26 +45,11 @@ void initialize() {
 
   // auton selector (brain screen). first entry = default
   ez::as::auton_selector.autons_add({
-      {"yellow in middle + color", redRightQuals},
-      {"yellow in middle + color", redLeftQuals},
-      {"4 pins (wall yellow)", redRightElim},
-      {"4 pins (wall yellow)", redLeftElim},
-      {"yellows in middle", redRightYellows},
-      {"yellows in middle", redLeftYellows},
-      {"yellow in middle + color", blueRightQuals},
-      {"yellow in middle + color", blueLeftQuals},
-      {"4 pins (wall yellow)", blueRightElim},
-      {"4 pins (wall yellow)", blueLeftElim},
-      {"yellows in middle", blueRightYellows},
-      {"yellows in middle", blueLeftYellows},
-      {"Skills\n\nProgramming skills run (60s solo)", skills},
-      {"Arm Height Test\n\nCycles the arm through low/mid/high presets (move_absolute), prints encoder pos", arm_height_test},
+      {"redLeft", redLeft},
+      {"redRight", redRight},
+      {"blueLeft", blueLeft},
+      {"blueRight", blueRight},
       {"Arm Height Capture\n\nJog the arm by hand (R2/L2), screen shows live position -- write down the number at each pin height", arm_height_capture},
-      {"PID Square\n\n48in square (straights + 90 turns), tune drive/turn PID by how well it closes", pid_square},
-      {"Motion Profile\n\nTrapezoidal profiled drive 48in, print traveled distance", motion_profile_test},
-      {"Odom Spin\n\nMotor pivots in place; reports x/y drift (should be ~0)", odom_spin_test},
-      {"MCL Test\n\nParticle filter: converge near corner, catch a planted 4in odom error, flush between motions", mcl_test},
-      {"Wall Reset Test\n\nOne-shot odom snap off front/right/left sensors, plants a wrong pose first", wall_reset_test},
   });
 
   chassis.initialize();

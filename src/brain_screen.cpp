@@ -370,99 +370,22 @@ void BrainScreen::anim_timer(lv_timer_t* t) {
 }
 
 // ===========================================================================
-// auton list + coded paths
+// auton list
 // ===========================================================================
-//
-// The three match shapes, straight from autons.cpp. LEFT variants are the same
-// distances with the turn signs flipped; BLUE is RED drawn mirrored. If you
-// change an auton's moves, update its list here so the preview stays honest.
-namespace {
-// >>> TUNE ME <<< field start pose (inches from center; heading 0 = up-field,
-// positive = clockwise). Heading is 180 (facing the bottom wall) because the
-// autons open by driving BACKWARD (-17_in) -- so reverse carries the bot up
-// into the field. Blue is auto-mirrored from these.
-const Pose START_RIGHT = {0, -70.5, 180};
-const Pose START_LEFT = {0, -70.5, 180};
-
-// right-side coded moves ('D' drive in, 'T' relative turn deg, 'A' absolute deg)
-const std::vector<Move> QUALS_R = {
-    {'D', -17}, {'T', -90}, {'D', -19}, {'D', 19}, {'T', 45},  {'D', -38}, {'T', -135},
-    {'D', -19}, {'D', 19},  {'T', -90}, {'D', -26}, {'T', 45}, {'D', -35}};
-// Elim transcribed exactly from autons.cpp -- ALL turns are pid_turn_relative_set
-// ('T', relative). LEFT is NOT a clean mirror of RIGHT (its 45in drive signs
-// differ), so both are spelled out rather than derived.
-const std::vector<Move> ELIM_R = {
-    {'D', -19}, {'T', -90}, {'D', -19}, {'D', 19}, {'D', -45}, {'D', -27}, {'D', 27}, {'D', 45},
-    {'D', -19}, {'D', 19},  {'T', -135}, {'D', -27}, {'D', 27}, {'D', -45}, {'D', -19}};
-const std::vector<Move> ELIM_L = {
-    {'D', -19}, {'T', 90}, {'D', -19}, {'D', 19}, {'D', 45}, {'D', -27}, {'D', 27}, {'D', -45},
-    {'D', -19}, {'D', 19},  {'T', 135}, {'D', -27}, {'D', 27}, {'D', 45}, {'D', -19}};
-const std::vector<Move> YELLOWS_R = {
-    {'D', -18}, {'T', -90}, {'D', -19}, {'D', 19},  {'T', 45}, {'D', -34}, {'T', -135},
-    {'D', -19}, {'D', 19},  {'T', 45},  {'D', -34}, {'T', -135}, {'D', -19}};
-
-// flip turn signs to make the LEFT mirror of a RIGHT move list
-std::vector<Move> mirror_moves(const std::vector<Move>& in) {
-  std::vector<Move> out = in;
-  for (Move& m : out)
-    if (m.kind == 'T' || m.kind == 'A') m.v = -m.v;
-  return out;
-}
-
-Preview mk(const std::vector<Move>& moves, Pose start, bool blue) {
-  Preview p;
-  p.has = true;
-  p.start = start;
-  p.mirror = blue;
-  p.moves = moves;
-  return p;
-}
-}  // namespace
-
+// no preview data yet for redLeft/redRight/blueLeft/blueRight -- they're still
+// placeholder wiggle routines. Add a Move list here (see git history for the
+// old QUALS_R/ELIM_R/YELLOWS_R style) once their real paths are written.
 void brain_screen_init() {
   const lv_color_t RED = lv_color_hex(0xff3643);
   const lv_color_t BLUE = lv_color_hex(0x01b1f0);
-  const lv_color_t GREEN = lv_color_hex(0x22d428);
   const lv_color_t GRAY = lv_color_hex(0x575757);
 
-  const std::vector<Move> QUALS_L = mirror_moves(QUALS_R);
-  const std::vector<Move> YELLOWS_L = mirror_moves(YELLOWS_R);
-  // ELIM_L is spelled out at file scope (its 45in drives don't mirror cleanly).
-
-  // pid_square is literally a 48" square -- a nice self-check of the preview.
-  const std::vector<Move> SQUARE = {{'D', 48}, {'T', 90}, {'D', 48}, {'T', 90},
-                                     {'D', 48}, {'T', 90}, {'D', 48}, {'T', 90}};
-
   std::vector<AutonItem> a = {
-      {"redRightQuals", redRightQuals, "yellow in middle + color", RED,
-       mk(QUALS_R, START_RIGHT, false)},
-      {"redLeftQuals", redLeftQuals, "yellow in middle + color", RED,
-       mk(QUALS_L, START_LEFT, false)},
-      {"redRightElim", redRightElim, "4 pins (wall yellow)", RED, {}},
-      {"redLeftElim", redLeftElim, "4 pins (wall yellow)", RED, {}},
-      {"redRightYellows", redRightYellows, "yellows in middle", RED,
-       mk(YELLOWS_R, START_RIGHT, false)},
-      {"redLeftYellows", redLeftYellows, "yellows in middle", RED,
-       mk(YELLOWS_L, START_LEFT, false)},
-      {"blueRightQuals", blueRightQuals, "yellow in middle + color", BLUE,
-       mk(QUALS_R, START_RIGHT, true)},
-      {"blueLeftQuals", blueLeftQuals, "yellow in middle + color", BLUE,
-       mk(QUALS_L, START_LEFT, true)},
-      {"blueRightElim", blueRightElim, "4 pins (wall yellow)", BLUE, {}},
-      {"blueLeftElim", blueLeftElim, "4 pins (wall yellow)", BLUE, {}},
-      {"blueRightYellows", blueRightYellows, "yellows in middle", BLUE,
-       mk(YELLOWS_R, START_RIGHT, true)},
-      {"blueLeftYellows", blueLeftYellows, "yellows in middle", BLUE,
-       mk(YELLOWS_L, START_LEFT, true)},
-      {"skills", skills, "programming skills run (60s solo)", GREEN, {}},
-      {"arm_height_test", arm_height_test, "cycle arm low/mid/high", GRAY, {}},
+      {"redLeft", redLeft, "red, left side", RED, {}},
+      {"redRight", redRight, "red, right side", RED, {}},
+      {"blueLeft", blueLeft, "blue, left side", BLUE, {}},
+      {"blueRight", blueRight, "blue, right side", BLUE, {}},
       {"arm_height_capture", arm_height_capture, "jog arm, read live pos", GRAY, {}},
-      {"pid_square", pid_square, "48in square, tune PID", GRAY,
-       mk(SQUARE, {-24, -24, 0}, false)},
-      {"motion_profile_test", motion_profile_test, "profiled 48in", GRAY, {}},
-      {"odom_spin_test", odom_spin_test, "pivot in place", GRAY, {}},
-      {"mcl_test", mcl_test, "particle filter test", GRAY, {}},
-      {"wall_reset_test", wall_reset_test, "odom snap off wall", GRAY, {}},
   };
 
   brain_screen.init(a);
