@@ -12,3 +12,6 @@ void redLeft();
 void redRight();
 void blueLeft();
 void blueRight();
+
+// programming skills run
+void skills();

@@ -22,7 +22,7 @@ void controls() {
     set_roller(0);    // stop (brake HOLD holds it in place)
   }
  if (master.get_digital_new_press(DIGITAL_L2)) {
-    rotateClaw();
+    arm.move_absolute(0, 100);
   }
   // ---- roller (hold, in only) ----
 

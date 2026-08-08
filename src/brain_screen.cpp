@@ -378,6 +378,7 @@ void BrainScreen::anim_timer(lv_timer_t* t) {
 void brain_screen_init() {
   const lv_color_t RED = lv_color_hex(0xff3643);
   const lv_color_t BLUE = lv_color_hex(0x01b1f0);
+  const lv_color_t GREEN = lv_color_hex(0x22d428);
   const lv_color_t GRAY = lv_color_hex(0x575757);
 
   std::vector<AutonItem> a = {
@@ -385,6 +386,7 @@ void brain_screen_init() {
       {"redRight", redRight, "red, right side", RED, {}},
       {"blueLeft", blueLeft, "blue, left side", BLUE, {}},
       {"blueRight", blueRight, "blue, right side", BLUE, {}},
+      {"skills", skills, "programming skills run", GREEN, {}},
       {"arm_height_capture", arm_height_capture, "jog arm, read live pos", GRAY, {}},
   };
 

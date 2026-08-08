@@ -49,6 +49,7 @@ void initialize() {
       {"redRight", redRight},
       {"blueLeft", blueLeft},
       {"blueRight", blueRight},
+      {"Skills\n\nProgramming skills run", skills},
       {"Arm Height Capture\n\nJog the arm by hand (R2/L2), screen shows live position -- write down the number at each pin height", arm_height_capture},
   });
 

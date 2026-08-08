@@ -57,7 +57,7 @@ void redLeft() {
   chassis.pid_drive_set(7_in, 127, false);
   chassis.pid_wait();
 
-  arm.move_absolute(200, 100);
+  arm.move_absolute(350, 100);
   chassis.pid_drive_set(-18_in, 127, true);
   chassis.pid_wait();
   chassis.pid_turn_relative_set(90_deg, 120);
@@ -76,19 +76,20 @@ void redLeft() {
 
   chassis.pid_drive_set(20_in, 90, true);
   chassis.pid_wait();
-  chassis.pid_turn_relative_set(-44_deg, 120);
+  
+  chassis.pid_turn_relative_set(-44.5_deg, 120);
   chassis.pid_wait();
   arm.move_absolute(-20, 100);
-  chassis.pid_drive_set(-30_in, 65, true);
+  chassis.pid_drive_set(-29.5_in, 65, true);
   chassis.pid_wait();
-  chassis.pid_drive_set(-3.5_in, 30, true);
+  chassis.pid_drive_set(-3.5_in, 20, true);
   chassis.pid_wait();
 
   clawPiston.retract();
   arm.move_absolute(700, 100);
   pros::delay(700);
 
-  chassis.pid_turn_relative_set(123_deg, 100);
+  chassis.pid_turn_relative_set(126_deg, 100);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-14.5_in, 50, true);
@@ -98,6 +99,7 @@ void redLeft() {
   clawPiston.extend();
   chassis.pid_drive_set(5_in, 127, true);
   chassis.pid_wait();
+
 }
 
 void redRight() {
@@ -110,7 +112,7 @@ void redRight() {
   chassis.pid_drive_set(7_in, 127, false);
   chassis.pid_wait();
 
-  arm.move_absolute(200, 100);
+  arm.move_absolute(350, 100);
   chassis.pid_drive_set(-18_in, 127, true);
   chassis.pid_wait();
   chassis.pid_turn_relative_set(-90_deg, 120);
@@ -129,19 +131,20 @@ void redRight() {
 
   chassis.pid_drive_set(20_in, 90, true);
   chassis.pid_wait();
-  chassis.pid_turn_relative_set(44_deg, 120);
+  
+  chassis.pid_turn_relative_set(44.5_deg, 120);
   chassis.pid_wait();
   arm.move_absolute(-20, 100);
-  chassis.pid_drive_set(-30_in, 65, true);
+  chassis.pid_drive_set(-29.5_in, 65, true);
   chassis.pid_wait();
-  chassis.pid_drive_set(-3.5_in, 30, true);
+  chassis.pid_drive_set(-3.5_in, 20, true);
   chassis.pid_wait();
 
   clawPiston.retract();
   arm.move_absolute(700, 100);
   pros::delay(700);
 
-  chassis.pid_turn_relative_set(-123_deg, 100);
+  chassis.pid_turn_relative_set(-126_deg, 100);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-14.5_in, 50, true);
@@ -164,7 +167,7 @@ void blueLeft() {
   chassis.pid_drive_set(7_in, 127, false);
   chassis.pid_wait();
 
-  arm.move_absolute(200, 100);
+  arm.move_absolute(350, 100);
   chassis.pid_drive_set(-18_in, 127, true);
   chassis.pid_wait();
   chassis.pid_turn_relative_set(90_deg, 120);
@@ -183,19 +186,20 @@ void blueLeft() {
 
   chassis.pid_drive_set(20_in, 90, true);
   chassis.pid_wait();
-  chassis.pid_turn_relative_set(-44_deg, 120);
+  
+  chassis.pid_turn_relative_set(-44.5_deg, 120);
   chassis.pid_wait();
   arm.move_absolute(-20, 100);
-  chassis.pid_drive_set(-30_in, 65, true);
+  chassis.pid_drive_set(-29.5_in, 65, true);
   chassis.pid_wait();
-  chassis.pid_drive_set(-3.5_in, 30, true);
+  chassis.pid_drive_set(-3.5_in, 20, true);
   chassis.pid_wait();
 
   clawPiston.retract();
   arm.move_absolute(700, 100);
   pros::delay(700);
 
-  chassis.pid_turn_relative_set(123_deg, 100);
+  chassis.pid_turn_relative_set(126_deg, 100);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-14.5_in, 50, true);
@@ -205,7 +209,6 @@ void blueLeft() {
   clawPiston.extend();
   chassis.pid_drive_set(5_in, 127, true);
   chassis.pid_wait();
-
 
 }
 
@@ -219,7 +222,7 @@ void blueRight() {
   chassis.pid_drive_set(7_in, 127, false);
   chassis.pid_wait();
 
-  arm.move_absolute(200, 100);
+  arm.move_absolute(350, 100);
   chassis.pid_drive_set(-18_in, 127, true);
   chassis.pid_wait();
   chassis.pid_turn_relative_set(-90_deg, 120);
@@ -238,19 +241,20 @@ void blueRight() {
 
   chassis.pid_drive_set(20_in, 90, true);
   chassis.pid_wait();
-  chassis.pid_turn_relative_set(44_deg, 120);
+  
+  chassis.pid_turn_relative_set(44.5_deg, 120);
   chassis.pid_wait();
   arm.move_absolute(-20, 100);
-  chassis.pid_drive_set(-30_in, 65, true);
+  chassis.pid_drive_set(-29.5_in, 65, true);
   chassis.pid_wait();
-  chassis.pid_drive_set(-3.5_in, 30, true);
+  chassis.pid_drive_set(-3.5_in, 20, true);
   chassis.pid_wait();
 
   clawPiston.retract();
   arm.move_absolute(700, 100);
   pros::delay(700);
 
-  chassis.pid_turn_relative_set(-123_deg, 100);
+  chassis.pid_turn_relative_set(-126_deg, 100);
   chassis.pid_wait();
 
   chassis.pid_drive_set(-14.5_in, 50, true);
@@ -261,6 +265,62 @@ void blueRight() {
   chassis.pid_drive_set(5_in, 127, true);
   chassis.pid_wait();
 
+}
+
+// programming skills run
+void skills() {
+  chassis.pid_drive_set(-4_in, 127, false);
+  chassis.pid_wait();
+  chassis.pid_drive_set(6_in, 127, false);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-5_in, 127, false);
+  chassis.pid_wait();
+  chassis.pid_drive_set(7_in, 127, false);
+  chassis.pid_wait();
+
+  arm.move_absolute(350, 100);
+  chassis.pid_drive_set(-23_in, 127, true);
+  chassis.pid_wait();
+  chassis.pid_turn_relative_set(90_deg, 120);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-19_in, 60, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(1.5_in, 60, true);
+  chassis.pid_wait();
+
+  set_arm(-40);
+  pros::delay(800);
+  clawPiston.extend();
+  pros::delay(700);
+  set_arm(0);
+
+
+  chassis.pid_drive_set(20_in, 90, true);
+  chassis.pid_wait();
+  
+  chassis.pid_turn_relative_set(-43_deg, 120);
+  chassis.pid_wait();
+  arm.move_absolute(-20, 100);
+  chassis.pid_drive_set(-29.5_in, 65, true);
+  chassis.pid_wait();
+  chassis.pid_drive_set(-3.5_in, 20, true);
+  chassis.pid_wait();
+
+  clawPiston.retract();
+  arm.move_absolute(700, 100);
+  pros::delay(700);
+
+  chassis.pid_turn_relative_set(123_deg, 90);
+  chassis.pid_wait();
+
+  chassis.pid_drive_set(-14.5_in, 50, true);
+  chassis.pid_wait();
+  arm.move_absolute(305, 100);
+  pros::delay(800);
+  clawPiston.extend();
+
+  chassis.pid_drive_set(40_in, 127, true);
+  chassis.pid_wait();
 }
 
 // live capture tool for pin heights. tares at 0 (resting position), sets the
