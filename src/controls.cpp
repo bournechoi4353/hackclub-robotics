@@ -14,7 +14,7 @@ void controls() {
   if (master.get_digital(DIGITAL_R1)) {
     set_arm(127);   // full up
   } else if (master.get_digital(DIGITAL_R2)) {
-    set_arm(-60);  // full down
+    set_arm(-75);  // full down
   } else if (master.get_digital(DIGITAL_L1)) {
     set_roller(127);
   } else {
